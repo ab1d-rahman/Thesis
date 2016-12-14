@@ -1,0 +1,17 @@
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\DynamicGestureRecognition.exe.config
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\obj\Debug\DynamicGestureRecognition.csprojResolveAssemblyReference.cache
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.dll.config
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\DynamicGestureRecognition.exe
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\DynamicGestureRecognition.pdb
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.dll
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.Math.Core.dll
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.Math.dll
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.Statistics.dll
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Microsoft.Kinect.dll
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.xml
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.Math.xml
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.Math.Core.xml
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Accord.Statistics.xml
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\bin\Debug\Microsoft.Kinect.xml
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\obj\Debug\DynamicGestureRecognition.exe
+D:\Thesis\Codes\Thesis\DynamicGestureRecognition\DynamicGestureRecognition\obj\Debug\DynamicGestureRecognition.pdb
