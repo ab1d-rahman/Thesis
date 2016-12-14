@@ -32,3 +32,16 @@ E:\Thesis\BodyBasics-WPF\bin\AnyCPU\Debug\BodyBasics-WPF.exe.config
 E:\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF.exe
 D:\Thesis\Codes\Thesis\BodyBasics-WPF\bin\AnyCPU\Debug\BodyBasics-WPF.exe.config
 D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF.exe
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\bin\AnyCPU\Debug\BodyBasics-WPF.exe
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\bin\AnyCPU\Debug\BodyBasics-WPF.pdb
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\bin\AnyCPU\Debug\Microsoft.Kinect.dll
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\bin\AnyCPU\Debug\Microsoft.Kinect.xml
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF.csprojResolveAssemblyReference.cache
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\MainWindow.baml
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\MainWindow.g.cs
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\App.g.cs
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF_MarkupCompile.cache
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF.g.resources
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\Microsoft.Samples.Kinect.BodyBasics.Properties.Resources.resources
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF.csproj.GenerateResource.Cache
+D:\Thesis\Codes\Thesis\BodyBasics-WPF\obj\Debug\BodyBasics-WPF.pdb

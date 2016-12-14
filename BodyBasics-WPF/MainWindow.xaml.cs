@@ -136,11 +136,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
         double prevx, prevy, prevz, currTime, prevTime, x, y, z, speedthreshold=120.0;
         Stopwatch stopwatch;
+        List<int> FeatureVector;
 
         //constructor
 
         public MainWindow()
         {
+
+            FeatureVector = new List<int>();
             // one sensor is currently supported
             this.kinectSensor = KinectSensor.GetDefault();
 
@@ -348,71 +351,100 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                             IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
 
-                            CameraSpacePoint hand = joints[JointType.HandRight].Position;
-                            CameraSpacePoint shoulder = joints[JointType.ShoulderRight].Position;
+                            //CameraSpacePoint hand = joints[JointType.HandRight].Position;
+                            //CameraSpacePoint shoulder = joints[JointType.ShoulderRight].Position;
 
-                            double dx = hand.X - shoulder.X;
-                            double dz = hand.Z - shoulder.Z;
+                            //double dx = hand.X - shoulder.X;
+                            //double dz = hand.Z - shoulder.Z;
 
-                            double xComponent = dx / Math.Sqrt((dx * dx) + (dz * dz));
-                            double zComponent = dz / Math.Sqrt((dx * dx) + (dz * dz));
+                            //double xComponent = dx / Math.Sqrt((dx * dx) + (dz * dz));
+                            //double zComponent = dz / Math.Sqrt((dx * dx) + (dz * dz));
 
-                            Debug.WriteLine("X = " + xComponent * 100 + "   Z = " + zComponent * 100);
-                            // convert the joint points to depth (display) space
-                            //Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
+                            //Debug.WriteLine("X = " + xComponent * 100 + "   Z = " + zComponent * 100);
+                            //convert the joint points to depth (display)space
 
-                            //CameraSpacePoint position = joints[JointType.HandRight].Position;
-                            //if (position.Z < 0)
+                           Dictionary < JointType,Point > jointPoints = new Dictionary<JointType,Point>();
+
+                            CameraSpacePoint position = joints[JointType.HandRight].Position;
+                            if(position.Z < 0)
+                            {
+                                position.Z = InferredZPositionClamp;
+                            }
+
+                            DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
+
+
+                            string text = "";
+                            x = (double)position.X;
+                            y = (double)position.Y;
+                            z = (double)position.Z;
+                            if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
+                            {
+                                tracking = true;
+                                stopwatch = new Stopwatch();
+                                stopwatch.Start();
+                                prevx = x;
+                                prevy = y;
+                                prevz = z;
+                                //count++;
+                                //text = "Hand Right: x = " + Convert.ToString(x) + ", y = " + Convert.ToString(y) + "   Count: " + Convert.ToString(count);
+                                Debug.WriteLine("Gesture Start!!\n\n");
+                                prevTime = stopwatch.Elapsed.TotalSeconds;
+                                FeatureVector.Clear();
+
+                                continue;
+                                //System.IO.File.AppendAllText(@"C:\Users\Abid\Desktop\gg\BodyBasics-WPF\WriteText.txt", text + Environment.NewLine);
+
+                            }
+                            else if(tracking)
+                            {
+                                currTime = stopwatch.Elapsed.TotalSeconds;
+                                double speed = Math.Sqrt(((x - prevx) * (x - prevx)) + ((y - prevy) * (y - prevy)) + ((z - prevz) * (z - prevz))) * 1000.0 / (currTime - prevTime);
+                                //double speed = Math.Sqrt(Math.Pow(x-prevx, 2)+Math.Pow(y-prevy, 2)+Math.Pow(z-prevz;
+                                //Debug.WriteLine(speed);
+
+                                double dx, dy, theta, alpha;
+                                dx = x - prevx;
+                                dy = y - prevy;
+
+                                theta = Math.Atan(dy/dx)*(180.0/Math.PI);
+
+                                if(dy > 0 && dx > 0) alpha = theta;
+                                else if(dy > 0 && dx < 0) alpha = theta+180.0;
+                                else if(dy < 0 && dx < 0) alpha = theta+180.0;
+                                else alpha = theta+360.0;
+
+                                if(alpha >= 0.0 && alpha < 45.0) FeatureVector.Add(1);
+                                if(alpha >= 45.0 && alpha < 90.0) FeatureVector.Add(2);
+                                if(alpha >= 90.0 && alpha < 135.0) FeatureVector.Add(3);
+                                if(alpha >= 135.0 && alpha < 180.0) FeatureVector.Add(4);
+                                if(alpha >= 180.0 && alpha < 225.0) FeatureVector.Add(5);
+                                if(alpha >= 225.0 && alpha < 270.0) FeatureVector.Add(6);
+                                if(alpha >= 270.0 && alpha < 315.0) FeatureVector.Add(7);
+                                if(alpha >= 315.0 && alpha < 360.0) FeatureVector.Add(8);
+
+                                //Debug.WriteLine(alpha);
+                                if(speed < speedthreshold)
+                                {
+                                    Debug.WriteLine("End of Gesture!\n\n");
+                                    tracking = false;
+
+                                    for(int i = 0;i<FeatureVector.Count;i++) Debug.Write(FeatureVector[i] + " ");
+                                    Debug.WriteLine("");
+
+                                    System.Threading.Thread.Sleep(2000);
+                                }
+                                prevx = x;
+                                prevy = y;
+                                prevz = z;
+                                prevTime = currTime;
+                            }
+                            //foreach(JointType jointType in joints.Keys)
                             //{
-                            //    position.Z = InferredZPositionClamp;
-                            //}
+                            //    sometimes the depth(Z) of an inferred joint may show as negative
+                            //     clamp down to 0.1f to prevent coordinatemapper from returning(-Infinity,-Infinity)
 
-                            //DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
-
-
-                            //string text = "";
-                            //x = (double)position.X;
-                            //y = (double)position.Y;
-                            //z = (double)position.Z;
-                            //if (tracking == false  && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
-                            //{
-                            //    tracking = true;
-                            //    stopwatch = new Stopwatch();
-                            //    stopwatch.Start();
-                            //    prevx = x;
-                            //    prevy = y;
-                            //    prevz = z;
-                            //    //count++;
-                            //    //text = "Hand Right: x = " + Convert.ToString(x) + ", y = " + Convert.ToString(y) + "   Count: " + Convert.ToString(count);
-                            //    Debug.WriteLine("Gesture Start!!\n\n");
-                            //    prevTime = stopwatch.Elapsed.TotalSeconds;
-
-                            //    continue;
-                            //    //System.IO.File.AppendAllText(@"C:\Users\Abid\Desktop\gg\BodyBasics-WPF\WriteText.txt", text + Environment.NewLine);
-
-                            //}
-                            //else if (tracking )
-                            //{
-                            //    currTime = stopwatch.Elapsed.TotalSeconds;
-                            //    double speed = Math.Sqrt(((x - prevx) * (x - prevx)) + ((y - prevy) * (y - prevy)) + ((z - prevz) * (z - prevz))) * 1000.0 / (currTime - prevTime);
-                            //    //double speed = Math.Sqrt(Math.Pow(x-prevx, 2)+Math.Pow(y-prevy, 2)+Math.Pow(z-prevz;
-                            //    Debug.WriteLine(speed);
-                            //    if (speed < speedthreshold)
-                            //    {
-                            //        Debug.WriteLine("End of Gesture!\n\n");
-                            //        tracking = false;
-                            //    }
-                            //    prevx = x;
-                            //    prevy = y;
-                            //    prevz = z;
-                            //    prevTime = currTime;
-                            //}
-                            //foreach (JointType jointType in joints.Keys)
-                            //{
-                            //    // sometimes the depth(Z) of an inferred joint may show as negative
-                            //    // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
-                                
-                            //    //jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+                            //    jointPoints[jointType] = new Point(depthSpacePoint.X,depthSpacePoint.Y);
                             //}
 
                             //this.DrawBody(joints, jointPoints, dc, drawPen);
@@ -423,7 +455,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     }
 
                     // prevent drawing outside of our render area
-                    this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    //this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
                 }
             }
         }
