@@ -92,6 +92,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     if(choice == "N")
                     {
                         isTraining = false;
+                        Console.WriteLine("Stand in front of the kinect and perform any gesture to recognize\n");
+
                     }
                     else
                     {
@@ -102,7 +104,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         count = 0;
                         onTraining = true;
                     }
-                }
+                }            
 
                 foreach(Body body in this.bodies)
                 {
@@ -263,25 +265,22 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                                     for(int i = 0;i<FeatureVector.Count;i++) Console.Write(FeatureVector[i] + ",");
                                     Console.WriteLine("");
-                                    count++;
-                                    Console.WriteLine(count);
-
-                                    if(count <= 6)
+                                    
+                                    double maximumLikelihood = 0.0;
+                                    int matchedIndex = 0;
+                                    for(int i=0; i<HMM.Count; i++)
                                     {
-                                        TrainingSequence.Add(FeatureVector);
-                                    }
-                                    if(count == 6)
-                                    {
-                                        sequences = TrainingSequence.Select(a => a.ToArray()).ToArray();
-                                        teacher.Run(sequences);
-                                    }
-
-                                    if(count > 6)
-                                    {
-                                        //double prob = Math.Exp(hmm.Evaluate(FeatureVector.ToArray()));
-                                        //Console.WriteLine("Probablity = " + prob);
+                                        double likeliHood = Math.Exp(HMM[i].Item2.Evaluate(FeatureVector.ToArray()));  
+                                        
+                                        if(likeliHood > maximumLikelihood)
+                                        {
+                                            maximumLikelihood = likeliHood;
+                                            matchedIndex = i;
+                                        }    
                                     }
 
+                                    if(maximumLikelihood == 0.0) Console.WriteLine("Unidentified Gesture!!\n");
+                                    else Console.WriteLine("Performed gesture identified as \""+ HMM[matchedIndex].Item1 + "\"\n\n");
                                     System.Threading.Thread.Sleep(2000);
                                 }
                                 prevx = x;
