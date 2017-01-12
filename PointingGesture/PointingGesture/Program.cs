@@ -104,16 +104,16 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                   
                         //Console.WriteLine(start.X + " " + start.Z + " " + end.X + " " + end.Z);
 
+                        // calculating slope(m) and intercept(c)
                         double dz = end.Z - start.Z;
                         double dx = end.X - start.X;
 
                         double m = dz/dx;
-
                         double c = start.Z-m*start.X;
 
                         double length = 500.0;
                         double alpha = Math.Atan2(end.Z-start.Z, end.X-start.X);
-                        end = new Point(start.X+length*Math.Cos(alpha), start.Z+length*Math.Sin(alpha));
+                        end = new Point(start.X+length*Math.Cos(alpha), start.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
 
                         if(start.X < 0.0) userPosition = new Point((start.X-50.0)/50.0,start.Z/50.0);
                         else userPosition = new Point(start.X/50.0,start.Z/50.0);
@@ -125,8 +125,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         Console.WriteLine("You are standing on: " + currentBox.X + ", " + currentBox.Z);
                         Console.WriteLine("");
                         Console.WriteLine("You are pointing to:");
-                        currentBoxCorner = new Point(0.0, 0.0);
-                        if(dx > 0.0)
+                        currentBoxCorner = new Point(0.0, 0.0);  // dummy initialization
+                        if(dx > 0.0)  // if the user is pointing towards north-east
                         {
                             //currentBoxCorner = new Point((currentBox.X+1.0)*50.0,(currentBox.Z)*50.0);
                             currentBoxCorner.X = (currentBox.X+1.0)*50.0;
@@ -145,7 +145,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                 currentBoxCorner.Z = currentBox.Z*50.0;
                             }
                         }                        
-                        else
+                        else  // if the user is pointing towards north-west
                         {
                             //currentBoxCorner = new Point((currentBox.X)*50.0,(currentBox.Z)*50.0);
                             currentBoxCorner.X = currentBox.X*50.0;
