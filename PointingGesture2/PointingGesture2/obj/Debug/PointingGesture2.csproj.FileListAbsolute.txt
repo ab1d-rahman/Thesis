@@ -1,0 +1,8 @@
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\bin\Debug\PointingGesture2.exe.config
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\bin\Debug\PointingGesture2.exe
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\bin\Debug\PointingGesture2.pdb
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\bin\Debug\Microsoft.Kinect.dll
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\bin\Debug\Microsoft.Kinect.xml
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\obj\Debug\PointingGesture2.csprojResolveAssemblyReference.cache
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\obj\Debug\PointingGesture2.exe
+D:\Thesis\Codes\Misc\PointingGesture2\PointingGesture2\obj\Debug\PointingGesture2.pdb
