@@ -3,8 +3,8 @@
 
 using namespace std;
 double cx=0,cy=0,cz=0;
-double crsx, crsy;
-
+double crsx = 50.0, crsy=-10.0;
+double dsx=0.0, dsy=0.0, dex=0.0, dey=50.0;
 struct Point
 {
     char c;
@@ -156,19 +156,30 @@ void drawSequence(int i)
         seq.clear();
         return;
     }
-    if(seq[i].c == 'p')
+    if(seq[i].c == 's')
     {
-        crsx = seq[i].x;
-        crsy = seq[i].y;
+        dsx = seq[i].x;
+        dsy = seq[i].y;
+        dex = seq[i+1].x;
+        dey = seq[i+1].y;
+
+        glutPostRedisplay();
+        glutTimerFunc(100, drawSequence, i+2);
+        return;
     }
-    else
+    else if(seq[i].c == 'r')
     {
         cx = seq[i].x;
         cy = seq[i].y;
     }
+    else
+    {
+        crsx = seq[i].x;
+        crsy = seq[i].y;
+    }
 
     glutPostRedisplay();
-    glutTimerFunc(200, drawSequence, i+1);
+    glutTimerFunc(100, drawSequence, i+1);
 }
 
 
@@ -176,7 +187,7 @@ void readF()
 {
     string s;
     double x, y;
-    ifstream iFile("C:\\Users\\Abid\\Desktop\\Simulator\\in.txt");    // input.txt has integers, one per line
+    ifstream iFile("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt");    // input.txt has integers, one per line
 
     while (true)
     {
@@ -185,7 +196,8 @@ void readF()
         iFile >> x;
         iFile >> y;
 
-        seq.push_back(Point(s[0], x, y));
+//        cout << s << " " << x << " " << y <<endl;
+        seq.push_back(Point(s[0], x, -y));
     }
 
     drawSequence(0);
@@ -201,15 +213,28 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
+void drawDirection()
+{
+    glBegin(GL_LINES);
+    glLineWidth(1);
+
+    glVertex2f(dsx, dsy);
+    glVertex2f(dex, dey);
+
+    glEnd();
+}
+
 void display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    glTranslatef(0,0,-500);
+    glTranslatef(0,0,-850);
+    glScalef(0.5, 0.5, 0.5);
 //    glRotatef(45,1,1,0);
 
     draws(cx, cy);
     drawg();
+    drawDirection();
     drawX(crsx, crsy);
 //    drawGrid();
 //    theCube();
@@ -220,7 +245,7 @@ int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE);
-    glutInitWindowSize(800,600);
+    glutInitWindowSize(700,700);
     glutCreateWindow("Robot Navigation");
     init();
     glutKeyboardFunc(keyboard);
