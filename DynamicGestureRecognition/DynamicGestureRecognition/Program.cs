@@ -131,6 +131,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         {
                             if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
                             {
+                                System.Threading.Thread.Sleep(150);
                                 tracking = true;
                                 stopwatch = new Stopwatch();
                                 stopwatch.Start();
@@ -214,6 +215,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         { 
                             if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
                             {
+                                System.Threading.Thread.Sleep(150);
                                 tracking = true;
                                 stopwatch = new Stopwatch();
                                 stopwatch.Start();
