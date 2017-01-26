@@ -33,11 +33,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private bool tracking = false;
 
         Point userPosition, currentBox, currentBoxCorner, start, end, robot;
+        StreamWriter file;
 
         public Worker()
         {
             this.kinectSensor = KinectSensor.GetDefault();
             robot = new Point(15, 20);
+            File.WriteAllText("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt", "");
+            //file = new StreamWriter("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt", true);
             if(kinectSensor != null)
             {
                 this.kinectSensor.Open();
@@ -126,7 +129,9 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         }
                         else z = -500.0;
 
-                        Console.WriteLine("X: " + x + "  Z: " + z );
+                        File.AppendAllText("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt", "s " + robot.X + " " + robot.Z + Environment.NewLine);
+                        File.AppendAllText("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt", "p " + x + " " + z + Environment.NewLine);
+                        Console.WriteLine("p " + x + " " + z);
 
 
                         if(body.HandLeftState == HandState.Open)
@@ -138,10 +143,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                             //double alpha = Math.Atan2(robot.Z-z, robot.X-x);
                             //robot = new Point(x+length*Math.Cos(alpha),z+length*Math.Sin(alpha));  // extending the line by length cm from start position
-                            Console.WriteLine("Robot at: " + robot.X + " " + robot.Z);
+                            File.AppendAllText("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt","r " + robot.X + " " + robot.Z + Environment.NewLine);
+                            Console.WriteLine("r " + robot.X + " " + robot.Z);
+
 
                         }
-                        System.Threading.Thread.Sleep(300);
+                        System.Threading.Thread.Sleep(200);
 
                         
 
