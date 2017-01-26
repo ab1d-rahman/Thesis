@@ -1,0 +1,11 @@
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\bin\Debug\PointingGesture3.exe.config
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\bin\Debug\PointingGesture3.exe
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\bin\Debug\PointingGesture3.pdb
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\bin\Debug\Microsoft.Kinect.dll
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\bin\Debug\Microsoft.Kinect.xml
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\obj\Debug\PointingGesture3.csprojResolveAssemblyReference.cache
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\obj\Debug\PointingGesture3.exe
+D:\Thesis\Codes\Misc\PointingGesture3\PointingGesture3\obj\Debug\PointingGesture3.pdb
+D:\Thesis\Codes\Thesis-Git\PointingGesture3\PointingGesture3\bin\Debug\PointingGesture3.exe.config
+D:\Thesis\Codes\Thesis-Git\PointingGesture3\PointingGesture3\obj\Debug\PointingGesture3.exe
+D:\Thesis\Codes\Thesis-Git\PointingGesture3\PointingGesture3\obj\Debug\PointingGesture3.pdb
