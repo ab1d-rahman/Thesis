@@ -86,87 +86,102 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                         IReadOnlyDictionary<JointType,Joint> joints = body.Joints;
 
+                        CameraSpacePoint leftLeg = joints[JointType.FootLeft].Position;
+                        CameraSpacePoint rightLeg = joints[JointType.FootRight].Position;
 
-                        CameraSpacePoint HandPosition = joints[JointType.HandRight].Position;
-                        CameraSpacePoint ShoulderPosition = joints[JointType.ShoulderRight].Position;
-                        if(HandPosition.Z < 0)
-                        {
-                            HandPosition.Z = InferredZPositionClamp;
-                        }
-                        if(ShoulderPosition.Z < 0)
-                        {
-                            ShoulderPosition.Z = InferredZPositionClamp;
-                        }
+                        CameraSpacePoint rightShoulder = joints[JointType.ShoulderRight].Position;
 
-                        start = new Point((double)ShoulderPosition.X*100.0, (double)ShoulderPosition.Z*100.0);
-                        end = new Point((double)HandPosition.X*100.0,(double)HandPosition.Z*100.0);
+                        CameraSpacePoint rightHand = joints[JointType.WristRight].Position;
 
-                  
-                        //Console.WriteLine(start.X + " " + start.Z + " " + end.X + " " + end.Z);
+                        ////Console.WriteLine("Left Foot: " + "  " + leftLeg.Y*100);
+                        //Console.WriteLine("Right Foot: " + "  " + rightLeg.Y*100);
+                        Console.WriteLine(rightShoulder.Y*100 + "  " + rightHand.Y*100 + "  " + rightShoulder.Z*100 + "  " + rightHand.Z*100);
 
-                        // calculating slope(m) and intercept(c)
-                        double dz = end.Z - start.Z;
-                        double dx = end.X - start.X;
+                        //Console.WriteLine(Math.Abs(rightShoulder.Y*100 - rightLeg.Y*100));
 
-                        double m = dz/dx;
-                        double c = start.Z-m*start.X;
+                        System.Threading.Thread.Sleep(500);
 
-                        double length = 500.0;
-                        double alpha = Math.Atan2(end.Z-start.Z, end.X-start.X);
-                        end = new Point(start.X+length*Math.Cos(alpha), start.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
 
-                        if(start.X < 0.0) userPosition = new Point((start.X-50.0)/50.0,start.Z/50.0);
-                        else userPosition = new Point(start.X/50.0,start.Z/50.0);
-                        currentBox = new Point((int)userPosition.X,(int)userPosition.Z);
+                        //CameraSpacePoint HandPosition = joints[JointType.HandRight].Position;
+                        //CameraSpacePoint ShoulderPosition = joints[JointType.ShoulderRight].Position;
+                        //if(HandPosition.Z < 0)
+                        //{
+                        //    HandPosition.Z = InferredZPositionClamp;
+                        //}
+                        //if(ShoulderPosition.Z < 0)
+                        //{
+                        //    ShoulderPosition.Z = InferredZPositionClamp;
+                        //}
 
-                        //Console.WriteLine("new -->" + start.X + " " + start.Z + " " + end.X + " " + end.Z);
-                        //Console.WriteLine("mc " + m + " " + c);
+                        //start = new Point((double)ShoulderPosition.X*100.0, (double)ShoulderPosition.Z*100.0);
+                        //end = new Point((double)HandPosition.X*100.0,(double)HandPosition.Z*100.0);
 
-                        Console.WriteLine("You are standing on: " + currentBox.X + ", " + currentBox.Z);
-                        Console.WriteLine("");
-                        Console.WriteLine("You are pointing to:");
-                        currentBoxCorner = new Point(0.0, 0.0);  // dummy initialization
-                        if(dx > 0.0)  // if the user is pointing towards north-east
-                        {
-                            //currentBoxCorner = new Point((currentBox.X+1.0)*50.0,(currentBox.Z)*50.0);
-                            currentBoxCorner.X = (currentBox.X+1.0)*50.0;
-                            currentBoxCorner.Z = currentBox.Z*50.0;
 
-                            while(currentBoxCorner.X < end.X && currentBoxCorner.Z > end.Z)
-                            {
-                                Console.WriteLine(currentBox.X + " " + currentBox.Z);
-                                if(isAbove(currentBoxCorner,m,c))
-                                {
-                                    currentBox.X += 1;
-                                }
-                                else currentBox.Z -= 1;
+                        ////Console.WriteLine(start.X + " " + start.Z + " " + end.X + " " + end.Z);
 
-                                currentBoxCorner.X = (currentBox.X+1.0)*50.0;
-                                currentBoxCorner.Z = currentBox.Z*50.0;
-                            }
-                        }                        
-                        else  // if the user is pointing towards north-west
-                        {
-                            //currentBoxCorner = new Point((currentBox.X)*50.0,(currentBox.Z)*50.0);
-                            currentBoxCorner.X = currentBox.X*50.0;
-                            currentBoxCorner.Z = currentBox.Z*50.0;
+                        //// calculating slope(m) and intercept(c)
+                        //double dz = end.Z - start.Z;
+                        //double dx = end.X - start.X;
 
-                            while(currentBoxCorner.X > end.X && currentBoxCorner.Z > end.Z)
-                            {
-                                Console.WriteLine(currentBox.X + " " + currentBox.Z);
-                                if(isAbove(currentBoxCorner,m,c))
-                                {
-                                    currentBox.X -= 1;
-                                }
-                                else currentBox.Z -= 1;
+                        //double m = dz/dx;
+                        //double c = start.Z-m*start.X;
 
-                                currentBoxCorner.X = currentBox.X*50.0;
-                                currentBoxCorner.Z = currentBox.Z*50.0;
-                            }
-                        }
+                        //double length = 500.0;
+                        //double alpha = Math.Atan2(end.Z-start.Z, end.X-start.X);
+                        //end = new Point(start.X+length*Math.Cos(alpha), start.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
 
-                        Console.WriteLine("");
-                        System.Threading.Thread.Sleep(1000);
+                        //if(start.X < 0.0) userPosition = new Point((start.X-50.0)/50.0,start.Z/50.0);
+                        //else userPosition = new Point(start.X/50.0,start.Z/50.0);
+                        //currentBox = new Point((int)userPosition.X,(int)userPosition.Z);
+
+                        ////Console.WriteLine("new -->" + start.X + " " + start.Z + " " + end.X + " " + end.Z);
+                        ////Console.WriteLine("mc " + m + " " + c);
+
+                        //Console.WriteLine("You are standing on: " + currentBox.X + ", " + currentBox.Z);
+                        //Console.WriteLine("");
+                        //Console.WriteLine("You are pointing to:");
+                        //currentBoxCorner = new Point(0.0, 0.0);  // dummy initialization
+                        //if(dx > 0.0)  // if the user is pointing towards north-east
+                        //{
+                        //    //currentBoxCorner = new Point((currentBox.X+1.0)*50.0,(currentBox.Z)*50.0);
+                        //    currentBoxCorner.X = (currentBox.X+1.0)*50.0;
+                        //    currentBoxCorner.Z = currentBox.Z*50.0;
+
+                        //    while(currentBoxCorner.X < end.X && currentBoxCorner.Z > end.Z)
+                        //    {
+                        //        Console.WriteLine(currentBox.X + " " + currentBox.Z);
+                        //        if(isAbove(currentBoxCorner,m,c))
+                        //        {
+                        //            currentBox.X += 1;
+                        //        }
+                        //        else currentBox.Z -= 1;
+
+                        //        currentBoxCorner.X = (currentBox.X+1.0)*50.0;
+                        //        currentBoxCorner.Z = currentBox.Z*50.0;
+                        //    }
+                        //}                        
+                        //else  // if the user is pointing towards north-west
+                        //{
+                        //    //currentBoxCorner = new Point((currentBox.X)*50.0,(currentBox.Z)*50.0);
+                        //    currentBoxCorner.X = currentBox.X*50.0;
+                        //    currentBoxCorner.Z = currentBox.Z*50.0;
+
+                        //    while(currentBoxCorner.X > end.X && currentBoxCorner.Z > end.Z)
+                        //    {
+                        //        Console.WriteLine(currentBox.X + " " + currentBox.Z);
+                        //        if(isAbove(currentBoxCorner,m,c))
+                        //        {
+                        //            currentBox.X -= 1;
+                        //        }
+                        //        else currentBox.Z -= 1;
+
+                        //        currentBoxCorner.X = currentBox.X*50.0;
+                        //        currentBoxCorner.Z = currentBox.Z*50.0;
+                        //    }
+                        //}
+
+                        //Console.WriteLine("");
+                        //System.Threading.Thread.Sleep(1000);
 
                     }
                 }
