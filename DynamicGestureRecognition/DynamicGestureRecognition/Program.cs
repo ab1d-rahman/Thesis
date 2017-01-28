@@ -46,7 +46,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             isTraining = true;
             onTraining = false;
 
-            numberOfTrainingSequences = 6;
+            numberOfTrainingSequences = 8;
 
             this.kinectSensor = KinectSensor.GetDefault();
 
@@ -199,6 +199,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                         HMM.Add(new Tuple<string, HiddenMarkovModel>(currentGestureName, hmm));
 
                                         Console.WriteLine("Training finished for current gesture!\n\n");
+                                        TrainingSequence.Clear();
                                         onTraining = false;
                                     }                                    
 
@@ -268,20 +269,20 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                     for(int i = 0;i<FeatureVector.Count;i++) Console.Write(FeatureVector[i] + ",");
                                     Console.WriteLine("");
                                     
-                                    double maximumLikelihood = 0.0;
+                                    double maximumLikelihood = -9999999.0;
                                     int matchedIndex = 0;
                                     for(int i=0; i<HMM.Count; i++)
                                     {
-                                        double likeliHood = Math.Exp(HMM[i].Item2.Evaluate(FeatureVector.ToArray()));  
+                                        double likeliHood = HMM[i].Item2.LogLikelihood(FeatureVector.ToArray());  
                                         
-                                        if(likeliHood > maximumLikelihood)
+                                        if(Double.IsInfinity(likeliHood) == false && likeliHood > maximumLikelihood)
                                         {
                                             maximumLikelihood = likeliHood;
                                             matchedIndex = i;
                                         }    
                                     }
 
-                                    if(maximumLikelihood == 0.0) Console.WriteLine("Unidentified Gesture!!\n");
+                                    if(maximumLikelihood == -9999999.0) Console.WriteLine("Unidentified Gesture!!\n");
                                     else Console.WriteLine("Performed gesture identified as \""+ HMM[matchedIndex].Item1 + "\"\n\n");
                                     System.Threading.Thread.Sleep(2000);
                                 }
