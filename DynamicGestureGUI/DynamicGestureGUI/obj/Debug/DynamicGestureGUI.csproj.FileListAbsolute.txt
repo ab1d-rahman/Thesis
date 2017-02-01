@@ -24,6 +24,6 @@ D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\bin\Debug\Accord.
 D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\bin\Debug\Accord.Statistics.xml
 D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\bin\Debug\Microsoft.Kinect.xml
 D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\obj\Debug\DynamicGestureGUI.csprojResolveAssemblyReference.cache
-D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\obj\Debug\DynamicGestureGUI.GestureForm.resources
 D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\obj\Debug\DynamicGestureGUI.Properties.Resources.resources
 D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\obj\Debug\DynamicGestureGUI.csproj.GenerateResource.Cache
+D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI\DynamicGestureGUI\obj\Debug\DynamicGestureGUI.GestureForm.resources

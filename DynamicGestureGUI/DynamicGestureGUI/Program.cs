@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace DynamicGestureGUI
 {
@@ -16,7 +17,9 @@ namespace DynamicGestureGUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
             Application.Run(new GestureForm());
+
         }
     }
 }

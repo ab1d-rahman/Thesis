@@ -63,9 +63,9 @@
             this.labelMode.AutoSize = true;
             this.labelMode.Location = new System.Drawing.Point(172, 9);
             this.labelMode.Name = "labelMode";
-            this.labelMode.Size = new System.Drawing.Size(115, 13);
+            this.labelMode.Size = new System.Drawing.Size(94, 13);
             this.labelMode.TabIndex = 2;
-            this.labelMode.Text = "Current Mode: Training";
+            this.labelMode.Text = "Recognition Mode";
             // 
             // comboTrain
             // 
@@ -95,9 +95,9 @@
             // 
             // buttonLearnHMM
             // 
-            this.buttonLearnHMM.Location = new System.Drawing.Point(49, 334);
+            this.buttonLearnHMM.Location = new System.Drawing.Point(49, 323);
             this.buttonLearnHMM.Name = "buttonLearnHMM";
-            this.buttonLearnHMM.Size = new System.Drawing.Size(75, 36);
+            this.buttonLearnHMM.Size = new System.Drawing.Size(75, 47);
             this.buttonLearnHMM.TabIndex = 5;
             this.buttonLearnHMM.Text = "Learn a new HMM";
             this.buttonLearnHMM.UseVisualStyleBackColor = true;
