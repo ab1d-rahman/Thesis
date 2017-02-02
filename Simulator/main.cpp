@@ -164,7 +164,7 @@ void drawSequence(int i)
         dey = seq[i+1].y;
 
         glutPostRedisplay();
-        glutTimerFunc(100, drawSequence, i+2);
+        glutTimerFunc(5, drawSequence, i+2);
         return;
     }
     else if(seq[i].c == 'r')
@@ -179,7 +179,7 @@ void drawSequence(int i)
     }
 
     glutPostRedisplay();
-    glutTimerFunc(100, drawSequence, i+1);
+    glutTimerFunc(5, drawSequence, i+1);
 }
 
 
@@ -187,8 +187,8 @@ void readF()
 {
     string s;
     double x, y;
-    ifstream iFile("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\in.txt");    // input.txt has integers, one per line
-
+    ifstream iFile("data.txt");    // input.txt has integers, one per line
+    if(!iFile) puts("ERROR");
     while (true)
     {
         if( iFile.eof() ) break;
@@ -216,7 +216,7 @@ void keyboard(unsigned char key, int x, int y)
 void drawDirection()
 {
     glBegin(GL_LINES);
-    glLineWidth(1);
+    glLineWidth(40.0);
 
     glVertex2f(dsx, dsy);
     glVertex2f(dex, dey);
