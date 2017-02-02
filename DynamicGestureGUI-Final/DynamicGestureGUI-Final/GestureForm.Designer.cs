@@ -36,6 +36,9 @@
             this.buttonLearnHMM = new System.Windows.Forms.Button();
             this.buttonLoadFromFile = new System.Windows.Forms.Button();
             this.buttonSaveToFile = new System.Windows.Forms.Button();
+            this.buttonKinect = new System.Windows.Forms.Button();
+            this.labelPointing = new System.Windows.Forms.Label();
+            this.comboPointing = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // buttonTrain
@@ -61,7 +64,7 @@
             // labelMode
             // 
             this.labelMode.AutoSize = true;
-            this.labelMode.Location = new System.Drawing.Point(172, 9);
+            this.labelMode.Location = new System.Drawing.Point(197, 65);
             this.labelMode.Name = "labelMode";
             this.labelMode.Size = new System.Drawing.Size(94, 13);
             this.labelMode.TabIndex = 2;
@@ -123,11 +126,45 @@
             this.buttonSaveToFile.UseVisualStyleBackColor = true;
             this.buttonSaveToFile.Click += new System.EventHandler(this.buttonSaveToFile_Click);
             // 
+            // buttonKinect
+            // 
+            this.buttonKinect.Location = new System.Drawing.Point(200, 12);
+            this.buttonKinect.Name = "buttonKinect";
+            this.buttonKinect.Size = new System.Drawing.Size(75, 23);
+            this.buttonKinect.TabIndex = 8;
+            this.buttonKinect.Text = "Start Kinect";
+            this.buttonKinect.UseVisualStyleBackColor = true;
+            this.buttonKinect.Click += new System.EventHandler(this.buttonKinect_Click);
+            // 
+            // labelPointing
+            // 
+            this.labelPointing.AutoSize = true;
+            this.labelPointing.Location = new System.Drawing.Point(46, 423);
+            this.labelPointing.Name = "labelPointing";
+            this.labelPointing.Size = new System.Drawing.Size(187, 13);
+            this.labelPointing.TabIndex = 9;
+            this.labelPointing.Text = "Pointing Gesture Recognition Method:";
+            // 
+            // comboPointing
+            // 
+            this.comboPointing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPointing.FormattingEnabled = true;
+            this.comboPointing.Items.AddRange(new object[] {
+            "Method 1",
+            "Method 2"});
+            this.comboPointing.Location = new System.Drawing.Point(239, 420);
+            this.comboPointing.Name = "comboPointing";
+            this.comboPointing.Size = new System.Drawing.Size(121, 21);
+            this.comboPointing.TabIndex = 10;
+            // 
             // GestureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478, 382);
+            this.ClientSize = new System.Drawing.Size(478, 505);
+            this.Controls.Add(this.comboPointing);
+            this.Controls.Add(this.labelPointing);
+            this.Controls.Add(this.buttonKinect);
             this.Controls.Add(this.buttonSaveToFile);
             this.Controls.Add(this.buttonLoadFromFile);
             this.Controls.Add(this.buttonLearnHMM);
@@ -154,6 +191,9 @@
         private System.Windows.Forms.Button buttonLearnHMM;
         private System.Windows.Forms.Button buttonLoadFromFile;
         private System.Windows.Forms.Button buttonSaveToFile;
+        private System.Windows.Forms.Button buttonKinect;
+        private System.Windows.Forms.Label labelPointing;
+        private System.Windows.Forms.ComboBox comboPointing;
     }
 }
 
