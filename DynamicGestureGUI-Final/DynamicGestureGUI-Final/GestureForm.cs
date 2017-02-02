@@ -29,13 +29,16 @@ namespace DynamicGestureGUI
         private bool isTraining;
         private bool isTracking;
         private bool isKinectOn;
+        private bool goForward;
 
         private Point current, previous;
         private Point reference, transformation;
-        private Point start, end, robot;
+        private Point start, end, robot, intersection;
         
         private StreamWriter simulator;
         private const double normalizer = 15.0;
+        private const double speedChange = 2.0;
+        private double speed;
 
         Dictionary <int, String> labelToName;
         List<List<int>> trainingSequences;
@@ -60,8 +63,10 @@ namespace DynamicGestureGUI
             isTraining = false;
             isTracking = false;
             isKinectOn = false;
+            goForward = true;
 
-            labelInfo.Text = "Idle";
+            speed = 2.0;
+            labelGesture.Text = "Idle";
             comboTrain.SelectedItem = "Forward"; 
             comboPointing.SelectedItem = "Method 1";
 
@@ -77,14 +82,15 @@ namespace DynamicGestureGUI
 
             reference = new Point(150.0, 150.0, 150.0);
             robot = new Point(0.0, 0.0);
+            intersection = new Point(0.0, 0.0);
 
             this.kinectSensor = KinectSensor.GetDefault();
 
-            if(kinectSensor != null)
-            {
-                this.kinectSensor.Open();
-                //this.kinectSensor.Close();
-            }
+            //if(kinectSensor != null)
+            //{
+            //    this.kinectSensor.Open();
+            //    //this.kinectSensor.Close();
+            //}
 
             GetFrames();    
             
@@ -100,19 +106,26 @@ namespace DynamicGestureGUI
         {
             return Math.Sqrt((a.X-b.X)*(a.X-b.X)+(a.Z-b.Z)*(a.Z-b.Z));
         }
-
-        public double distance(CameraSpacePoint a, CameraSpacePoint b)
+        
+        public void forward()
         {
-            a.X *= 100.0f;
-            a.Y *= 100.0f;
-            a.Z *= 100.0f;
-            b.X *= 100.0f;
-            b.Y *= 100.0f;
-            b.Z *= 100.0f;
-
-            return Math.Sqrt((a.X-b.X)*(a.X-b.X)+(a.Y-b.Y)*(a.Y-b.Y));
+            goForward = true;
         }
 
+        public void backward()
+        {
+            goForward = false;
+        }
+
+        public void speedUp()
+        {
+            speed += speedChange;
+        }
+
+        public void speedDown()
+        {
+            if(speed >=0.0) speed -= speedChange;
+        }
         private void buttonKinect_Click(object sender,EventArgs e)
         {
             if(isKinectOn == false)
@@ -173,14 +186,14 @@ namespace DynamicGestureGUI
                         
 
                         /// Pointing Gesture
-                        Debug.WriteLine(handRight.Y*100.0 + " " + elbowRight.Y*100 + " " + shoulderRight.Y*100);
+                        //Debug.WriteLine(handRight.Y*100.0 + " " + elbowRight.Y*100 + " " + shoulderRight.Y*100);
                         double handRightY = handRight.Y * 100.0;
                         double elbowRightY = elbowRight.Y * 100.0;
                         double shoulderRightY = shoulderRight.Y * 100.0;
 
                         if(handRightY > shoulderRightY && elbowRightY > shoulderRightY && Math.Abs(elbowRightY-shoulderRightY) > 5.0  && Math.Abs(elbowRightY-shoulderRightY) < 13.0  && Math.Abs(handRightY-shoulderRightY) >15.0 && Math.Abs(handRightY-shoulderRightY) < 26.0)
                         {
-                            labelInfo.Text = "Robot is Moving";
+                            labelRobot.Text = "Robot Status: Moving";
 
                             if(comboPointing.SelectedIndex == 0)
                             {
@@ -214,88 +227,146 @@ namespace DynamicGestureGUI
                                 simulator.WriteLine("s " + start.X + " " + start.Z);
                                 simulator.WriteLine("p " + x + " " + z);
                                 simulator.WriteLine("i " + x + " " + z);
-                                double length = 1.0;
+                                double length = speed;
 
                                 double alpha = Math.Atan2(z-robot.Z, x-robot.X);
                                 robot = new Point(robot.X+length*Math.Cos(alpha),robot.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
-
-
                                 simulator.WriteLine("r " + robot.X + " " + robot.Z);
 
                             }
+                            else
+                            {
+                                start = new Point((double)shoulderRight.X*100.0,(double)shoulderRight.Z*100.0);
+                                end = new Point((double)handRight.X*100.0,(double)handRight.Z*100.0);
+                                                                
+                                // calculating slope(m) and intercept(c)
+                                double dz = end.Z - start.Z;
+                                double dx = end.X - start.X;
+
+                                double m1 = dz/dx;
+                                double c1 = start.Z-m1*start.X;
+
+                                double m2 = -(1/m1);
+                                double c2 = robot.Z-(robot.X*m2);
+
+                                intersection.X = (c2-c1)/(m1-m2);
+                                intersection.Z = m1*intersection.X+c1;
+
+                                double length = 800.0;
+                                double alpha = Math.Atan2(end.Z-start.Z,end.X-start.X);
+                                end = new Point(start.X+length*Math.Cos(alpha),start.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
+
+
+                                simulator.WriteLine("s " + start.X + " " + start.Z);
+                                simulator.WriteLine("p " + end.X + " " + end.Z);
+                                simulator.WriteLine("i " + intersection.X + " " + intersection.Z);
+                                
+                                
+                                if(distance(intersection, robot) > 10.0)
+                                {
+                                    length = 5.0;
+                                    alpha = Math.Atan2(intersection.Z-robot.Z, intersection.X-robot.X);
+                                    robot = new Point(robot.X+length*Math.Cos(alpha), robot.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
+                                                   
+                                }
+                                else
+                                {
+                                    if(goForward)
+                                    {
+                                        length = speed;
+                                        alpha = Math.Atan2(end.Z-robot.Z, end.X-robot.X);
+                                        robot = new Point(robot.X+length*Math.Cos(alpha), robot.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position                               
+                                    }
+                                    else
+                                    {
+                                        length = speed;
+                                        alpha = Math.Atan2(start.Z-robot.Z, start.X-robot.X);
+                                        robot = new Point(robot.X+length*Math.Cos(alpha), robot.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position                               
+                                    
+                                    }
+                                    
+                                }
+
+                                simulator.WriteLine("r " + robot.X + " " + robot.Z);                                
+                            }
                         }
-                        else labelInfo.Text = "Idle";
+                        else
+                        {
+                            labelRobot.Text = "Robot Status: Idle";
+                        }
 
-                        //    if(isTracking)
-                        //    {
-                        //        current = new Point(handRight.X*100.0-transformation.X, handRight.Y*100.0-transformation.Y, handRight.Z*100.0-transformation.Z);
+                        if(isTracking)
+                        {
+                            current = new Point(handRight.X*100.0-transformation.X,handRight.Y*100.0-transformation.Y,handRight.Z*100.0-transformation.Z);
+                            //Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
+                            //Debug.WriteLine(Convert.ToInt32(current.X/normalizer));
+                            handX.Add(Convert.ToInt32(current.X/normalizer));
+                            handY.Add(Convert.ToInt32(current.Y/normalizer));
+                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
 
-                        //        handX.Add(Convert.ToInt32(current.X/normalizer));
-                        //        handY.Add(Convert.ToInt32(current.Y/normalizer));
-                        //        handZ.Add(Convert.ToInt32(current.Z/normalizer));
+                        }
 
-                        //    }
+                        if(isTracking == false && elbowLeft.Y*100.0+14.0 < handLeft.Y*100.0 &&  body.HandLeftState == HandState.Closed)
+                        {
+                            labelGesture.Text = "Tracking";
+                            handX.Clear();
+                            handY.Clear();
+                            handZ.Clear();
 
-                        //    if(isTracking == false && body.HandLeftState == HandState.Closed)
-                        //    {
-                        //        labelInfo.Text = "Tracking";
-                        //        handX.Clear();
-                        //        handY.Clear();
-                        //        handZ.Clear();
+                            current = new Point(handRight.X*100.0,handRight.Y*100.0,handRight.Z*100.0);
+                            transformation = new Point(current.X-reference.X,current.Y-reference.Y,current.Z-reference.Z);
+                            current = reference;
+                            handX.Add(Convert.ToInt32(current.X/normalizer));
+                            handY.Add(Convert.ToInt32(current.Y/normalizer));
+                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
+                            isTracking = true;
+                            featureVector.Clear();
+                        }
 
-                        //        current = new Point(handRight.X*100.0, handRight.Y*100.0, handRight.Z*100.0);
-                        //        transformation = new Point(current.X-reference.X, current.Y-reference.Y, current.Z-reference.Z);
-                        //        current = reference;
-                        //        handX.Add(Convert.ToInt32(current.X/normalizer));
-                        //        handY.Add(Convert.ToInt32(current.Y/normalizer));
-                        //        handZ.Add(Convert.ToInt32(current.Z/normalizer));
-                        //        isTracking = true;
-                        //        featureVector.Clear();
-                        //        //System.Threading.Thread.Sleep(50);
-                        //    }
+                        if(isTracking == true && body.HandLeftState == HandState.Open)
+                        {
+                            isTracking = false;
 
-                        //    if(isTracking == true && body.HandLeftState == HandState.Open)
-                        //    {
-                        //        isTracking = false;                            
+                            if(isTraining == true)
+                            {
+                                featureVector.Clear();
+                                for(int i = 0;i<handX.Count;i++) featureVector.Add(handX[i]);
+                                for(int i = 0;i<handY.Count;i++) featureVector.Add(handY[i]);
+                                for(int i = 0;i<handZ.Count;i++) featureVector.Add(handZ[i]);
+                                trainingSequences.Add(new List<int>(featureVector));
+                                trainingLabels.Add(comboTrain.SelectedIndex);
+                                
+                                labelGesture.Text = "Idle";
+                            }
+                            else
+                            {
+                                featureVector.Clear();
+                                for(int i = 0;i<handX.Count;i++) featureVector.Add(handX[i]);
+                                for(int i = 0;i<handY.Count;i++) featureVector.Add(handY[i]);
+                                for(int i = 0;i<handZ.Count;i++) featureVector.Add(handZ[i]);
+                                int recognizedLabel = classifier.Decide(featureVector.ToArray());
+                                labelGesture.Text = labelToName[recognizedLabel];
+                                
+                                if(recognizedLabel == 0) forward();
+                                else if(recognizedLabel == 1) backward();
+                                else if(recognizedLabel == 2) speedUp();
+                                else if(recognizedLabel == 3) speedDown();
+                                
+                                //String sequenceFile = @"Resources\S.txt";
+                                //String labelFile =  @"Resources\L.txt";
 
-                        //        if(isTraining == true)
-                        //        {
-                        //            featureVector.Clear();
-                        //            for(int i=0; i<handX.Count; i++) featureVector.Add(handX[i]);
-                        //            for(int i=0; i<handY.Count; i++) featureVector.Add(handY[i]);
-                        //            for(int i=0; i<handZ.Count; i++) featureVector.Add(handZ[i]);
-                        //            trainingSequences.Add(new List<int>(featureVector));
-                        //            trainingLabels.Add(comboTrain.SelectedIndex);
+                                ////System.IO.File.WriteAllText(sequenceFile, "");
+                                ////System.IO.File.WriteAllText(labelFile, "");
 
-                        //            //string gg ="";
-                        ////            for(int i = 0;i<featureVector.Count;i++)
-                        ////gg += featureVector[i].ToString();
-                        //            labelInfo.Text = "Idle";
-                        //            //Debug.WriteLine(gg);
-                        //        }
-                        //        else
-                        //        {
-                        //            featureVector.Clear();
-                        //            for(int i=0; i<handX.Count; i++) featureVector.Add(handX[i]);
-                        //            for(int i=0; i<handY.Count; i++) featureVector.Add(handY[i]);
-                        //            for(int i=0; i<handZ.Count; i++) featureVector.Add(handZ[i]);
-                        //            int recognizedLabel = classifier.Decide(featureVector.ToArray());
-                        //            labelInfo.Text = labelToName[recognizedLabel];
-                        //            //String sequenceFile = @"Resources\S.txt";
-                        //            //String labelFile =  @"Resources\L.txt";
+                                //for(int i = 0;i<featureVector.Count;i++)
+                                //{
 
-                        //            ////System.IO.File.WriteAllText(sequenceFile, "");
-                        //            ////System.IO.File.WriteAllText(labelFile, "");
+                                //    System.IO.File.AppendAllText(sequenceFile,featureVector[i].ToString());
+                                //}
 
-                        //            //for(int i = 0;i<featureVector.Count;i++)
-                        //            //{
-
-                        //            //    System.IO.File.AppendAllText(sequenceFile,featureVector[i].ToString());
-                        //            //}
-
-                        //            //System.IO.File.AppendAllText(sequenceFile, "  " + recognizedLabel.ToString() + Environment.NewLine);
-                        //        }
-                        //    }
+                                //System.IO.File.AppendAllText(sequenceFile, "  " + recognizedLabel.ToString() + Environment.NewLine);
+                            }
+                        }
                     }
                 }                
             }
@@ -345,7 +416,7 @@ namespace DynamicGestureGUI
                 for(int i = 0;i<trainingSequences.Count;i++)
                 {
                     for(int j = 0;j<trainingSequences[i].Count;j++)
-                        sw.Write(trainingSequences[i][j].ToString());
+                        sw.Write(trainingSequences[i][j].ToString() + " ");
                     sw.WriteLine("");
                 }                
             }
@@ -372,7 +443,8 @@ namespace DynamicGestureGUI
                 while((line = sr.ReadLine()) != null)
                 {
                     featureVector.Clear();
-                    for(int i=0; i<line.Length; i++) featureVector.Add(line[i]-48);
+                    String[] fv = line.Split(' ');
+                    for(int i=0; i<fv.Length-1; i++) featureVector.Add(Convert.ToInt32(fv[i]));
                     trainingSequences.Add(new List<int>(featureVector));
                 }
             }

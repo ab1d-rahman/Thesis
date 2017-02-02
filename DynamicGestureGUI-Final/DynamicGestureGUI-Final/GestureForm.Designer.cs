@@ -32,13 +32,14 @@
             this.buttonRecog = new System.Windows.Forms.Button();
             this.labelMode = new System.Windows.Forms.Label();
             this.comboTrain = new System.Windows.Forms.ComboBox();
-            this.labelInfo = new System.Windows.Forms.Label();
+            this.labelGesture = new System.Windows.Forms.Label();
             this.buttonLearnHMM = new System.Windows.Forms.Button();
             this.buttonLoadFromFile = new System.Windows.Forms.Button();
             this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.buttonKinect = new System.Windows.Forms.Button();
             this.labelPointing = new System.Windows.Forms.Label();
             this.comboPointing = new System.Windows.Forms.ComboBox();
+            this.labelRobot = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonTrain
@@ -86,15 +87,15 @@
             this.comboTrain.TabIndex = 3;
             this.comboTrain.Visible = false;
             // 
-            // labelInfo
+            // labelGesture
             // 
-            this.labelInfo.AutoSize = true;
-            this.labelInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInfo.Location = new System.Drawing.Point(210, 191);
-            this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(65, 25);
-            this.labelInfo.TabIndex = 4;
-            this.labelInfo.Text = "Info: ";
+            this.labelGesture.AutoSize = true;
+            this.labelGesture.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelGesture.Location = new System.Drawing.Point(168, 237);
+            this.labelGesture.Name = "labelGesture";
+            this.labelGesture.Size = new System.Drawing.Size(65, 25);
+            this.labelGesture.TabIndex = 4;
+            this.labelGesture.Text = "Info: ";
             // 
             // buttonLearnHMM
             // 
@@ -157,18 +158,29 @@
             this.comboPointing.Size = new System.Drawing.Size(121, 21);
             this.comboPointing.TabIndex = 10;
             // 
+            // labelRobot
+            // 
+            this.labelRobot.AutoSize = true;
+            this.labelRobot.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold);
+            this.labelRobot.Location = new System.Drawing.Point(120, 186);
+            this.labelRobot.Name = "labelRobot";
+            this.labelRobot.Size = new System.Drawing.Size(155, 25);
+            this.labelRobot.TabIndex = 11;
+            this.labelRobot.Text = "Robot Status:";
+            // 
             // GestureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(478, 505);
+            this.Controls.Add(this.labelRobot);
             this.Controls.Add(this.comboPointing);
             this.Controls.Add(this.labelPointing);
             this.Controls.Add(this.buttonKinect);
             this.Controls.Add(this.buttonSaveToFile);
             this.Controls.Add(this.buttonLoadFromFile);
             this.Controls.Add(this.buttonLearnHMM);
-            this.Controls.Add(this.labelInfo);
+            this.Controls.Add(this.labelGesture);
             this.Controls.Add(this.comboTrain);
             this.Controls.Add(this.labelMode);
             this.Controls.Add(this.buttonRecog);
@@ -187,13 +199,14 @@
         private System.Windows.Forms.Button buttonRecog;
         private System.Windows.Forms.Label labelMode;
         private System.Windows.Forms.ComboBox comboTrain;
-        private System.Windows.Forms.Label labelInfo;
+        private System.Windows.Forms.Label labelGesture;
         private System.Windows.Forms.Button buttonLearnHMM;
         private System.Windows.Forms.Button buttonLoadFromFile;
         private System.Windows.Forms.Button buttonSaveToFile;
         private System.Windows.Forms.Button buttonKinect;
         private System.Windows.Forms.Label labelPointing;
         private System.Windows.Forms.ComboBox comboPointing;
+        private System.Windows.Forms.Label labelRobot;
     }
 }
 
