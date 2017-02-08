@@ -47,6 +47,8 @@ namespace DynamicGestureGUI
         
         HiddenMarkovClassifier classifier;
 
+        int px, py, pz;
+
         public GestureForm()
         {
             InitializeComponent();                   
@@ -315,9 +317,16 @@ namespace DynamicGestureGUI
                             current = new Point(handRight.X*100.0-transformation.X,handRight.Y*100.0-transformation.Y,handRight.Z*100.0-transformation.Z);
                             //Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
                             //Debug.WriteLine(Convert.ToInt32(current.X/normalizer));
-                            handX.Add(Convert.ToInt32(current.X/normalizer));
-                            handY.Add(Convert.ToInt32(current.Y/normalizer));
-                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
+                            int x, y, z;
+                            x = Convert.ToInt32(current.X/normalizer);
+                            y = Convert.ToInt32(current.Y/normalizer);
+                            z = Convert.ToInt32(current.Z/normalizer);
+
+                            if(px != x) handX.Add(x);
+                            if(py != y) handY.Add(y);
+                            if(pz != z) handZ.Add(z);
+
+                            px = x; py = y; pz = z;
 
                         }
 
@@ -331,11 +340,18 @@ namespace DynamicGestureGUI
                             current = new Point(handRight.X*100.0,handRight.Y*100.0,handRight.Z*100.0);
                             transformation = new Point(current.X-reference.X,current.Y-reference.Y,current.Z-reference.Z);
                             current = reference;
-                            handX.Add(Convert.ToInt32(current.X/normalizer));
-                            handY.Add(Convert.ToInt32(current.Y/normalizer));
-                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
+
+                            px = Convert.ToInt32(current.X/normalizer);
+                            py = Convert.ToInt32(current.Y/normalizer);
+                            pz = Convert.ToInt32(current.Z/normalizer);
+
+                            handX.Add(px);
+                            handY.Add(py);
+                            handZ.Add(pz);
                             isTracking = true;
                             featureVector.Clear();
+
+
                         }
 
                         if(isTracking == true && body.HandLeftState == HandState.Open)
