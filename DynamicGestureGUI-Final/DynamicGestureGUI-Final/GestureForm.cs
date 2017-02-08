@@ -36,8 +36,9 @@ namespace DynamicGestureGUI
         private Point start, end, robot, intersection;
         
         private StreamWriter simulator;
-        private const double normalizer = 15.0;
+        private const double normalizer = 20.0;
         private const double speedChange = 2.0;
+        private double A, B, D;
         private double speed;
 
         Dictionary <int, String> labelToName;
@@ -65,6 +66,8 @@ namespace DynamicGestureGUI
             isKinectOn = false;
             goForward = true;
 
+            A = B = D = 500.0;
+
             speed = 2.0;
             labelGesture.Text = "Idle";
             comboTrain.SelectedItem = "Forward"; 
@@ -80,17 +83,17 @@ namespace DynamicGestureGUI
             System.IO.File.WriteAllText(@"Simulator/data.txt","");
             simulator = new StreamWriter(@"Simulator/data.txt", true);
 
-            reference = new Point(150.0, 150.0, 150.0);
+            reference = new Point(200.0, 200.0, 200.0);
             robot = new Point(0.0, 0.0);
             intersection = new Point(0.0, 0.0);
 
             this.kinectSensor = KinectSensor.GetDefault();
 
-            //if(kinectSensor != null)
-            //{
-            //    this.kinectSensor.Open();
-            //    //this.kinectSensor.Close();
-            //}
+            if(kinectSensor != null)
+            {
+                this.kinectSensor.Open();
+                //this.kinectSensor.Close();
+            }
 
             GetFrames();    
             
@@ -209,21 +212,33 @@ namespace DynamicGestureGUI
 
                                 double m = dz/dx;
                                 double c = start.Z-m*start.X;
-
-                                double x = (-500.0-c)/m;
-                                double z;
-                                if(x > 500.0)
+                                double x, z;
+                                if(dx == 0.0)
                                 {
-                                    z = (m*500)+c;
-                                    x = 500.0;
+                                    x = end.X;
+                                    z = -D;
                                 }
-                                else if(x < -500.0)
+                                else if(dx > 0.0)
                                 {
-                                    z = (m*(-500))+c;
-                                    x = -500.0;
+                                    z = m*A+c;
+                                    if(z < -D)
+                                    {
+                                        z = -D;
+                                        x = (z-c)/m;
+                                    }
+                                    else x = A;
                                 }
-                                else z = -500.0;
-
+                                else
+                                {
+                                    z = (m*(-B))+c;
+                                    if(z < -D)
+                                    {
+                                        z = -D;
+                                        x = (z-c)/m;
+                                    }
+                                    else x = -B;
+                                }
+                                
                                 simulator.WriteLine("s " + start.X + " " + start.Z);
                                 simulator.WriteLine("p " + x + " " + z);
                                 simulator.WriteLine("i " + x + " " + z);
