@@ -317,16 +317,9 @@ namespace DynamicGestureGUI
                             current = new Point(handRight.X*100.0-transformation.X,handRight.Y*100.0-transformation.Y,handRight.Z*100.0-transformation.Z);
                             //Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
                             //Debug.WriteLine(Convert.ToInt32(current.X/normalizer));
-                            int x, y, z;
-                            x = Convert.ToInt32(current.X/normalizer);
-                            y = Convert.ToInt32(current.Y/normalizer);
-                            z = Convert.ToInt32(current.Z/normalizer);
-
-                            if(px != x) handX.Add(x);
-                            if(py != y) handY.Add(y);
-                            if(pz != z) handZ.Add(z);
-
-                            px = x; py = y; pz = z;
+                            handX.Add(Convert.ToInt32(current.X/normalizer));
+                            handY.Add(Convert.ToInt32(current.Y/normalizer));
+                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
 
                         }
 
@@ -340,18 +333,11 @@ namespace DynamicGestureGUI
                             current = new Point(handRight.X*100.0,handRight.Y*100.0,handRight.Z*100.0);
                             transformation = new Point(current.X-reference.X,current.Y-reference.Y,current.Z-reference.Z);
                             current = reference;
-
-                            px = Convert.ToInt32(current.X/normalizer);
-                            py = Convert.ToInt32(current.Y/normalizer);
-                            pz = Convert.ToInt32(current.Z/normalizer);
-
-                            handX.Add(px);
-                            handY.Add(py);
-                            handZ.Add(pz);
+                            handX.Add(Convert.ToInt32(current.X/normalizer));
+                            handY.Add(Convert.ToInt32(current.Y/normalizer));
+                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
                             isTracking = true;
                             featureVector.Clear();
-
-
                         }
 
                         if(isTracking == true && body.HandLeftState == HandState.Open)
@@ -362,8 +348,11 @@ namespace DynamicGestureGUI
                             {
                                 featureVector.Clear();
                                 for(int i = 0;i<handX.Count;i++) featureVector.Add(handX[i]);
+                                featureVector.Add(0);
                                 for(int i = 0;i<handY.Count;i++) featureVector.Add(handY[i]);
+                                featureVector.Add(0);
                                 for(int i = 0;i<handZ.Count;i++) featureVector.Add(handZ[i]);
+                                featureVector.Add(0);
                                 trainingSequences.Add(new List<int>(featureVector));
                                 trainingLabels.Add(comboTrain.SelectedIndex);
                                 
