@@ -317,9 +317,11 @@ namespace DynamicGestureGUI
                             current = new Point(handRight.X*100.0-transformation.X,handRight.Y*100.0-transformation.Y,handRight.Z*100.0-transformation.Z);
                             //Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
                             //Debug.WriteLine(Convert.ToInt32(current.X/normalizer));
-                            handX.Add(Convert.ToInt32(current.X/normalizer));
-                            handY.Add(Convert.ToInt32(current.Y/normalizer));
-                            handZ.Add(Convert.ToInt32(current.Z/normalizer));
+                            handX.Add(Convert.ToInt32(Math.Floor(current.X/normalizer)));
+                            handY.Add(Convert.ToInt32(Math.Floor(current.X/normalizer)));
+                            handZ.Add(Convert.ToInt32(Math.Floor(current.X/normalizer)));
+                            //Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
+                            //Debug.WriteLine(Convert.ToInt32(Math.Floor(current.X/normalizer))+ " " + Convert.ToInt32(Math.Floor(current.Y/normalizer)) + " " + Convert.ToInt32(Math.Floor(current.Z/normalizer)));
 
                         }
 
@@ -346,6 +348,7 @@ namespace DynamicGestureGUI
 
                             if(isTraining == true)
                             {
+                                Console.WriteLine();
                                 featureVector.Clear();
                                 for(int i = 0;i<handX.Count;i++) featureVector.Add(handX[i]);
                                 featureVector.Add(0);
@@ -409,7 +412,7 @@ namespace DynamicGestureGUI
         private void buttonLearnHMM_Click(object sender,EventArgs e)
         {
             ITopology forward = new Forward(states: 6);
-            classifier = new HiddenMarkovClassifier(classes: 5, topology: forward, symbols: 20);
+            classifier = new HiddenMarkovClassifier(classes: 2, topology: forward, symbols: 20);
             var teacher = new HiddenMarkovClassifierLearning(classifier,                
                 modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
                 {
