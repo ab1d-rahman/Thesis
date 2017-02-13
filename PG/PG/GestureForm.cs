@@ -30,6 +30,7 @@ namespace PG
         private bool isTracking;
         private bool isKinectOn;
         private bool goForward;
+        private bool returnToUser;
 
         private Point current, previous;
         private Point reference, transformation;
@@ -59,6 +60,43 @@ namespace PG
             InitializeComponent();                   
         }
 
+        private void comboPointing_SelectedIndexChanged(object sender,EventArgs e)
+        {
+            if(comboPointing.SelectedIndex == 0)
+            {
+                labelA.Visible = true;
+                labelB.Visible = true;
+                labelD.Visible = true;
+                textA.Visible = true;
+                textB.Visible = true;
+                textD.Visible = true;
+            }
+            else
+            {
+                labelA.Visible = false;
+                labelB.Visible = false;
+                labelD.Visible = false;
+                textA.Visible = false;
+                textB.Visible = false;
+                textD.Visible = false;
+            }
+        }
+
+        private void textA_TextChanged(object sender,EventArgs e)
+        {
+            A = Convert.ToInt32(textA.Text);            
+        }
+
+        private void textB_TextChanged(object sender,EventArgs e)
+        {
+            B = Convert.ToInt32(textB.Text);
+        }
+
+        private void textD_TextChanged(object sender,EventArgs e)
+        {
+            D = Convert.ToInt32(textD.Text);
+        }
+
         private void GestureForm_Load(object sender,EventArgs e)
         {
 
@@ -77,11 +115,13 @@ namespace PG
             isTracking = false;
             isKinectOn = false;
             goForward = true;
+            returnToUser = false;
 
-            A = B = D = 500.0;
+            A = Convert.ToInt32(textA.Text);
+            B = Convert.ToInt32(textB.Text);
+            D = Convert.ToInt32(textD.Text);
 
-            speed = 2.0;
-            labelGesture.Text = "Idle";
+            speed = 2.0;    
             comboTrain.SelectedItem = "Forward"; 
             comboPointing.SelectedItem = "Method 1";
 
@@ -141,6 +181,12 @@ namespace PG
         {
             if(speed >=0.0) speed -= speedChange;
         }
+
+        public void Return()
+        {
+            returnToUser = true;
+        }
+
         private void buttonKinect_Click(object sender,EventArgs e)
         {
             if(isKinectOn == false)
@@ -191,7 +237,8 @@ namespace PG
                 foreach(Body body in this.bodies)
                 {
                     if(body.IsTracked)
-                    { 
+                    {
+                        
                         IReadOnlyDictionary<JointType,Joint> joints = body.Joints;
                         CameraSpacePoint handRight = joints[JointType.HandRight].Position;
                         CameraSpacePoint shoulderRight = joints[JointType.ShoulderRight].Position;
@@ -199,6 +246,19 @@ namespace PG
                         CameraSpacePoint handLeft = joints[JointType.HandLeft].Position;
                         CameraSpacePoint elbowLeft = joints[JointType.ElbowLeft].Position;
                         
+                        if(returnToUser == true)
+                        {
+                            end = new Point((double)shoulderRight.X*100.0,(double)shoulderRight.Z*100.0);
+
+                            double length = speed;
+
+                            double alpha = Math.Atan2(end.Z-robot.Z, end.X-robot.X);
+                            robot = new Point(robot.X+length*Math.Cos(alpha),robot.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
+                            simulator.WriteLine("r " + robot.X + " " + robot.Z);
+
+                            if(distance(robot, end) < 10.0) returnToUser = false;
+
+                        } 
 
                         /// Pointing Gesture
                         //Debug.WriteLine(handRight.Y*100.0 + " " + elbowRight.Y*100 + " " + shoulderRight.Y*100);
@@ -208,9 +268,10 @@ namespace PG
                         double elbowRightY = elbowRight.Y*100.0 - tempz*0.42;
                         double shoulderRightY = shoulderRight.Y * 100.0;
 
-                        if(Math.Abs(shoulderRightY-elbowRightY) <= 2.0 && Math.Abs(shoulderRightY-handRightY) < 6.0)
+                        if(Math.Abs(shoulderRightY-elbowRightY) <= 3.0 && Math.Abs(shoulderRightY-handRightY) < 6.0)
                         {
                             labelRobot.Text = "Robot Status: Moving";
+                            returnToUser = false;
 
                             if(comboPointing.SelectedIndex == 0)
                             {
@@ -340,7 +401,7 @@ namespace PG
 
                         if(isTracking == false && elbowLeft.Y*100.0+14.0 < handLeft.Y*100.0 &&  body.HandLeftState == HandState.Closed)
                         {
-                            labelGesture.Text = "Tracking";
+                            labelGesture.Text = "Performing Gesture";
                             handX.Clear();
                             handY.Clear();
                             handZ.Clear();
@@ -371,7 +432,7 @@ namespace PG
                                 trainingSequences.Add(new List<int>(featureVector));
                                 trainingLabels.Add(comboTrain.SelectedIndex);
                                 
-                                labelGesture.Text = "Idle";
+                                labelGesture.Text = "Gesture Recognition: Idle";
                             }
                             else
                             {
@@ -386,7 +447,7 @@ namespace PG
                                 {
                                     double likelihood = HMM[i].Item2.LogLikelihood(featureVector.ToArray());
                                     if(Double.IsInfinity(likelihood)) continue;
-                                    if(likelihood >= -100.0 && likelihood >  mx)
+                                    if(likelihood >= -200.0 && likelihood >  mx)
                                     {
                                         mx = likelihood;
                                         recognizedLabel = i;
@@ -395,14 +456,15 @@ namespace PG
 
                                 if(mx != -999999.0)
                                 {
-                                    labelGesture.Text = labelToName[recognizedLabel];
+                                    labelGesture.Text = "Gesture Performed: " + labelToName[recognizedLabel];
 
                                     if(recognizedLabel == 0) forward();
                                     else if(recognizedLabel == 1) backward();
                                     else if(recognizedLabel == 2) speedUp();
                                     else if(recognizedLabel == 3) speedDown();
+                                    else Return();
                                 }
-                                else labelGesture.Text = "Unrecognized Gesture";
+                                else labelGesture.Text = "Gesture Performed: Unrecognized Gesture";
 
                                 //int recognizedLabel = classifier.Decide(featureVector.ToArray());
                                 //labelGesture.Text = labelToName[recognizedLabel];
@@ -434,14 +496,14 @@ namespace PG
 
         private void buttonTrain_Click(object sender,EventArgs e)
         {
-            labelMode.Text = "Training Mode";
+            labelMode.Text = "Mode: Training";
             comboTrain.Visible = true;
             isTraining = true;
         }
 
         private void buttonRecog_Click(object sender,EventArgs e)
         {
-            labelMode.Text = "Recognition Mode";
+            labelMode.Text = "Mode: Recognition";
             comboTrain.Visible = false;
             isTraining = false;
         }

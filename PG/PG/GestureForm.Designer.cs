@@ -40,13 +40,19 @@
             this.labelPointing = new System.Windows.Forms.Label();
             this.comboPointing = new System.Windows.Forms.ComboBox();
             this.labelRobot = new System.Windows.Forms.Label();
+            this.textA = new System.Windows.Forms.TextBox();
+            this.textB = new System.Windows.Forms.TextBox();
+            this.textD = new System.Windows.Forms.TextBox();
+            this.labelA = new System.Windows.Forms.Label();
+            this.labelB = new System.Windows.Forms.Label();
+            this.labelD = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonTrain
             // 
-            this.buttonTrain.Location = new System.Drawing.Point(25,45);
+            this.buttonTrain.Location = new System.Drawing.Point(25, 45);
             this.buttonTrain.Name = "buttonTrain";
-            this.buttonTrain.Size = new System.Drawing.Size(75,53);
+            this.buttonTrain.Size = new System.Drawing.Size(75, 53);
             this.buttonTrain.TabIndex = 0;
             this.buttonTrain.Text = "Change to Training Mode";
             this.buttonTrain.UseVisualStyleBackColor = true;
@@ -54,9 +60,9 @@
             // 
             // buttonRecog
             // 
-            this.buttonRecog.Location = new System.Drawing.Point(359,45);
+            this.buttonRecog.Location = new System.Drawing.Point(359, 45);
             this.buttonRecog.Name = "buttonRecog";
-            this.buttonRecog.Size = new System.Drawing.Size(75,53);
+            this.buttonRecog.Size = new System.Drawing.Size(75, 53);
             this.buttonRecog.TabIndex = 1;
             this.buttonRecog.Text = "Change To Recognition Mode";
             this.buttonRecog.UseVisualStyleBackColor = true;
@@ -65,11 +71,11 @@
             // labelMode
             // 
             this.labelMode.AutoSize = true;
-            this.labelMode.Location = new System.Drawing.Point(197,65);
+            this.labelMode.Location = new System.Drawing.Point(197, 65);
             this.labelMode.Name = "labelMode";
-            this.labelMode.Size = new System.Drawing.Size(94,13);
+            this.labelMode.Size = new System.Drawing.Size(91, 13);
             this.labelMode.TabIndex = 2;
-            this.labelMode.Text = "Recognition Mode";
+            this.labelMode.Text = "Mode: Reognition";
             // 
             // comboTrain
             // 
@@ -81,37 +87,37 @@
             "Speed Up",
             "Speed Down",
             "Return"});
-            this.comboTrain.Location = new System.Drawing.Point(25,115);
+            this.comboTrain.Location = new System.Drawing.Point(25, 115);
             this.comboTrain.Name = "comboTrain";
-            this.comboTrain.Size = new System.Drawing.Size(84,21);
+            this.comboTrain.Size = new System.Drawing.Size(84, 21);
             this.comboTrain.TabIndex = 3;
             this.comboTrain.Visible = false;
             // 
             // labelGesture
             // 
             this.labelGesture.AutoSize = true;
-            this.labelGesture.Font = new System.Drawing.Font("Microsoft Sans Serif",15.75F,System.Drawing.FontStyle.Bold,System.Drawing.GraphicsUnit.Point,((byte)(0)));
-            this.labelGesture.Location = new System.Drawing.Point(168,237);
+            this.labelGesture.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelGesture.Location = new System.Drawing.Point(109, 232);
             this.labelGesture.Name = "labelGesture";
-            this.labelGesture.Size = new System.Drawing.Size(65,25);
+            this.labelGesture.Size = new System.Drawing.Size(279, 25);
             this.labelGesture.TabIndex = 4;
-            this.labelGesture.Text = "Info: ";
+            this.labelGesture.Text = "Gesture Recognition: Idle";
             // 
             // buttonLearnHMM
             // 
-            this.buttonLearnHMM.Location = new System.Drawing.Point(49,323);
+            this.buttonLearnHMM.Location = new System.Drawing.Point(49, 323);
             this.buttonLearnHMM.Name = "buttonLearnHMM";
-            this.buttonLearnHMM.Size = new System.Drawing.Size(75,47);
+            this.buttonLearnHMM.Size = new System.Drawing.Size(75, 47);
             this.buttonLearnHMM.TabIndex = 5;
-            this.buttonLearnHMM.Text = "Learn a new HMM";
+            this.buttonLearnHMM.Text = "Train HMMs";
             this.buttonLearnHMM.UseVisualStyleBackColor = true;
             this.buttonLearnHMM.Click += new System.EventHandler(this.buttonLearnHMM_Click);
             // 
             // buttonLoadFromFile
             // 
-            this.buttonLoadFromFile.Location = new System.Drawing.Point(200,323);
+            this.buttonLoadFromFile.Location = new System.Drawing.Point(200, 323);
             this.buttonLoadFromFile.Name = "buttonLoadFromFile";
-            this.buttonLoadFromFile.Size = new System.Drawing.Size(75,47);
+            this.buttonLoadFromFile.Size = new System.Drawing.Size(75, 47);
             this.buttonLoadFromFile.TabIndex = 6;
             this.buttonLoadFromFile.Text = "Load Training Data";
             this.buttonLoadFromFile.UseVisualStyleBackColor = true;
@@ -119,9 +125,9 @@
             // 
             // buttonSaveToFile
             // 
-            this.buttonSaveToFile.Location = new System.Drawing.Point(358,323);
+            this.buttonSaveToFile.Location = new System.Drawing.Point(358, 323);
             this.buttonSaveToFile.Name = "buttonSaveToFile";
-            this.buttonSaveToFile.Size = new System.Drawing.Size(75,47);
+            this.buttonSaveToFile.Size = new System.Drawing.Size(75, 47);
             this.buttonSaveToFile.TabIndex = 7;
             this.buttonSaveToFile.Text = "Save Training Data";
             this.buttonSaveToFile.UseVisualStyleBackColor = true;
@@ -129,9 +135,9 @@
             // 
             // buttonKinect
             // 
-            this.buttonKinect.Location = new System.Drawing.Point(200,12);
+            this.buttonKinect.Location = new System.Drawing.Point(200, 12);
             this.buttonKinect.Name = "buttonKinect";
-            this.buttonKinect.Size = new System.Drawing.Size(75,23);
+            this.buttonKinect.Size = new System.Drawing.Size(75, 23);
             this.buttonKinect.TabIndex = 8;
             this.buttonKinect.Text = "Start Kinect";
             this.buttonKinect.UseVisualStyleBackColor = true;
@@ -140,11 +146,11 @@
             // labelPointing
             // 
             this.labelPointing.AutoSize = true;
-            this.labelPointing.Location = new System.Drawing.Point(46,423);
+            this.labelPointing.Location = new System.Drawing.Point(101, 423);
             this.labelPointing.Name = "labelPointing";
-            this.labelPointing.Size = new System.Drawing.Size(187,13);
+            this.labelPointing.Size = new System.Drawing.Size(132, 13);
             this.labelPointing.TabIndex = 9;
-            this.labelPointing.Text = "Pointing Gesture Recognition Method:";
+            this.labelPointing.Text = "Robot Navigation Method:";
             // 
             // comboPointing
             // 
@@ -153,26 +159,87 @@
             this.comboPointing.Items.AddRange(new object[] {
             "Method 1",
             "Method 2"});
-            this.comboPointing.Location = new System.Drawing.Point(239,420);
+            this.comboPointing.Location = new System.Drawing.Point(239, 420);
             this.comboPointing.Name = "comboPointing";
-            this.comboPointing.Size = new System.Drawing.Size(121,21);
+            this.comboPointing.Size = new System.Drawing.Size(121, 21);
             this.comboPointing.TabIndex = 10;
+            this.comboPointing.SelectedIndexChanged += new System.EventHandler(this.comboPointing_SelectedIndexChanged);
             // 
             // labelRobot
             // 
             this.labelRobot.AutoSize = true;
-            this.labelRobot.Font = new System.Drawing.Font("Microsoft Sans Serif",15.75F,System.Drawing.FontStyle.Bold);
-            this.labelRobot.Location = new System.Drawing.Point(120,186);
+            this.labelRobot.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold);
+            this.labelRobot.Location = new System.Drawing.Point(120, 186);
             this.labelRobot.Name = "labelRobot";
-            this.labelRobot.Size = new System.Drawing.Size(155,25);
+            this.labelRobot.Size = new System.Drawing.Size(200, 25);
             this.labelRobot.TabIndex = 11;
-            this.labelRobot.Text = "Robot Status:";
+            this.labelRobot.Text = "Robot Status: Idle";
+            // 
+            // textA
+            // 
+            this.textA.Location = new System.Drawing.Point(73, 464);
+            this.textA.Name = "textA";
+            this.textA.Size = new System.Drawing.Size(51, 20);
+            this.textA.TabIndex = 12;
+            this.textA.Text = "500";
+            this.textA.TextChanged += new System.EventHandler(this.textA_TextChanged);
+            // 
+            // textB
+            // 
+            this.textB.Location = new System.Drawing.Point(224, 464);
+            this.textB.Name = "textB";
+            this.textB.Size = new System.Drawing.Size(51, 20);
+            this.textB.TabIndex = 13;
+            this.textB.Text = "500";
+            this.textB.TextChanged += new System.EventHandler(this.textB_TextChanged);
+            // 
+            // textD
+            // 
+            this.textD.Location = new System.Drawing.Point(382, 464);
+            this.textD.Name = "textD";
+            this.textD.Size = new System.Drawing.Size(51, 20);
+            this.textD.TabIndex = 14;
+            this.textD.Text = "500";
+            this.textD.TextChanged += new System.EventHandler(this.textD_TextChanged);
+            // 
+            // labelA
+            // 
+            this.labelA.AutoSize = true;
+            this.labelA.Location = new System.Drawing.Point(2, 467);
+            this.labelA.Name = "labelA";
+            this.labelA.Size = new System.Drawing.Size(65, 13);
+            this.labelA.TabIndex = 15;
+            this.labelA.Text = "Boundary A:";
+            // 
+            // labelB
+            // 
+            this.labelB.AutoSize = true;
+            this.labelB.Location = new System.Drawing.Point(156, 467);
+            this.labelB.Name = "labelB";
+            this.labelB.Size = new System.Drawing.Size(65, 13);
+            this.labelB.TabIndex = 16;
+            this.labelB.Text = "Boundary B:";
+            // 
+            // labelD
+            // 
+            this.labelD.AutoSize = true;
+            this.labelD.Location = new System.Drawing.Point(310, 467);
+            this.labelD.Name = "labelD";
+            this.labelD.Size = new System.Drawing.Size(66, 13);
+            this.labelD.TabIndex = 17;
+            this.labelD.Text = "Boundary D:";
             // 
             // GestureForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F,13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(478,505);
+            this.ClientSize = new System.Drawing.Size(478, 505);
+            this.Controls.Add(this.labelD);
+            this.Controls.Add(this.labelB);
+            this.Controls.Add(this.labelA);
+            this.Controls.Add(this.textD);
+            this.Controls.Add(this.textB);
+            this.Controls.Add(this.textA);
             this.Controls.Add(this.labelRobot);
             this.Controls.Add(this.comboPointing);
             this.Controls.Add(this.labelPointing);
@@ -207,6 +274,12 @@
         private System.Windows.Forms.Label labelPointing;
         private System.Windows.Forms.ComboBox comboPointing;
         private System.Windows.Forms.Label labelRobot;
+        private System.Windows.Forms.TextBox textA;
+        private System.Windows.Forms.TextBox textB;
+        private System.Windows.Forms.TextBox textD;
+        private System.Windows.Forms.Label labelA;
+        private System.Windows.Forms.Label labelB;
+        private System.Windows.Forms.Label labelD;
     }
 }
 
