@@ -5,6 +5,7 @@ using namespace std;
 double cx=0,cy=0,cz=0;
 double crsx = 50.0, crsy=-10.0;
 double dsx=0.0, dsy=0.0, dex=0.0, dey=50.0;
+double ux = 0.0, uy = -10.0;
 struct Point
 {
     char c;
@@ -109,6 +110,7 @@ void draws(double x, double y)
 {
 //    glPushMatrix();
 //    glTranslatef(cx,cy,cz);
+    glColor3f(0.0, 1.0, 0.0);
     glBegin(GL_QUADS);
     glVertex2f(x-5.0, y+5.0);
     glVertex2f(x+5.0, y+5.0);
@@ -118,10 +120,24 @@ void draws(double x, double y)
 //    glPopMatrix();
 }
 
+void drawu(double x, double y)
+{
+//    glPushMatrix();
+//    glTranslatef(cx,cy,cz);
+    glColor3f(1.0, 0.0, 0.0);
+    glBegin(GL_QUADS);
+    glVertex2f(x-5.0, y+5.0);
+    glVertex2f(x+5.0, y+5.0);
+    glVertex2f(x+5.0, y-5.0);
+    glVertex2f(x-5.0, y-5.0);
+    glEnd();
+//    glPopMatrix();
+}
 void drawX(double x, double y)
 {
     glBegin(GL_LINES);
     glLineWidth(1);
+    glColor3f(1.0, 1.0, 1.0);
 
     glVertex2f(crsx, crsy);
     glVertex2f(x-5.0, y+5.0);
@@ -163,6 +179,9 @@ void drawSequence(int i)
         dex = seq[i+1].x;
         dey = seq[i+1].y;
 
+        ux = seq[i].x;
+        uy = seq[i].y;
+
         glutPostRedisplay();
         glutTimerFunc(5, drawSequence, i+2);
         return;
@@ -187,7 +206,7 @@ void readF()
 {
     string s;
     double x, y;
-    ifstream iFile("data.txt");    // input.txt has integers, one per line
+    ifstream iFile("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\bin\\Debug\\data.txt");    // input.txt has integers, one per line
     if(!iFile) puts("ERROR");
     while (true)
     {
@@ -216,7 +235,7 @@ void keyboard(unsigned char key, int x, int y)
 void drawDirection()
 {
     glBegin(GL_LINES);
-    glLineWidth(40.0);
+    glColor3f(1.0, 0.0, 0.0);
 
     glVertex2f(dsx, dsy);
     glVertex2f(dex, dey);
@@ -233,6 +252,7 @@ void display()
 //    glRotatef(45,1,1,0);
 
     draws(cx, cy);
+    drawu(ux, uy);
     drawg();
     drawDirection();
     drawX(crsx, crsy);
