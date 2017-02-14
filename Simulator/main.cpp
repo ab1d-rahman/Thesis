@@ -202,24 +202,67 @@ void drawSequence(int i)
 }
 
 
-void readF()
+void readF(int a)
 {
     string s;
     double x, y;
-    ifstream iFile("D:\\Thesis\\Codes\\Thesis-Git\\Simulator\\bin\\Debug\\data.txt");    // input.txt has integers, one per line
-    if(!iFile) puts("ERROR");
-    while (true)
-    {
-        if( iFile.eof() ) break;
-        iFile >> s;
-        iFile >> x;
-        iFile >> y;
+    double px, py;
+    ifstream ifs("data.txt");    // input.txt has integers, one per line
+    if(!ifs) puts("ERROR");
 
-//        cout << s << " " << x << " " << y <<endl;
-        seq.push_back(Point(s[0], x, -y));
+//    glutTimerFunc(5, drawSequence, 0);
+    if (ifs.is_open())
+    {
+        string line;
+        while (true)
+        {
+            while (getline(ifs, line))
+            {
+                stringstream ss(line);
+                ss >> s;
+                ss >> x;
+                ss >> y;
+
+                y = -y;
+//                cout << s << " " << x << " " << y << endl;
+                Sleep(5);
+                if(s[0] == 's')
+                {
+                    px = x;
+                    py = y;
+                }
+                else if(s[0] == 'p')
+                {
+                    dsx = px;
+                    dsy = py;
+                    dex = x;
+                    dey = y;
+
+                    ux = px;
+                    uy = py;
+
+                }
+                else if(s[0] == 'r')
+                {
+                    cx = x;
+                    cy = y;
+                }
+                else
+                {
+                    crsx = x;
+                    crsy = y;
+                }
+
+            }
+            if (!ifs.eof()) break; // Ensure end of read was EOF.
+            ifs.clear();
+
+            // You may want a sleep in here to avoid
+            // being a CPU hog.
+        }
     }
 
-    drawSequence(0);
+//    drawSequence(0);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -228,7 +271,7 @@ void keyboard(unsigned char key, int x, int y)
     if(key=='a') cx -= 1;
     if(key=='s') cy -=1;
     if(key=='d') cx += 1;
-    if(key == 'g') readF();
+//    if(key == 'g') readF();
     glutPostRedisplay();
 }
 
@@ -270,6 +313,8 @@ int main(int argc, char **argv)
     init();
     glutKeyboardFunc(keyboard);
     glutDisplayFunc(display);
+    glutIdleFunc(display);
+    thread t(readF, 0);
     glutMainLoop();
     return 0;
 }
