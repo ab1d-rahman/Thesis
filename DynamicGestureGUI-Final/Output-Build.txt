@@ -1,0 +1,5 @@
+﻿1>------ Build started: Project: DynamicGestureGUI-Final, Configuration: Debug Any CPU ------
+1>D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI-Final\DynamicGestureGUI-Final\GestureForm.cs(380,28,380,69): warning CS0618: 'HiddenMarkovClassifierLearning.Run(int[][], int[])' is obsolete: 'Please use the Learn(x, y) method instead.'
+1>D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI-Final\DynamicGestureGUI-Final\GestureForm.cs(33,32,33,40): warning CS0169: The field 'GestureForm.previous' is never used
+1>  DynamicGestureGUI-Final -> D:\Thesis\Codes\Thesis-Git\DynamicGestureGUI-Final\DynamicGestureGUI-Final\bin\Debug\DynamicGestureGUI-Final.exe
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

@@ -85,26 +85,26 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
             if(dataReceived)
             {
-                if(isTraining && !onTraining)
-                {
-                    Console.WriteLine("Do you want to add a gesture?(Y/N)");
-                    string choice = Console.ReadLine();
-                    if(choice == "N")
-                    {
-                        isTraining = false;
-                        Console.WriteLine("Stand in front of the kinect and perform any gesture to recognize\n");
+                //if(isTraining && !onTraining)
+                //{
+                //    Console.WriteLine("Do you want to add a gesture?(Y/N)");
+                //    string choice = Console.ReadLine();
+                //    if(choice == "N")
+                //    {
+                //        isTraining = false;
+                //        Console.WriteLine("Stand in front of the kinect and perform any gesture to recognize\n");
 
-                    }
-                    else
-                    {
-                        Console.Write("Enter Gesture Name: ");
-                        currentGestureName = Console.ReadLine();
+                //    }
+                //    else
+                //    {
+                //        Console.Write("Enter Gesture Name: ");
+                //        currentGestureName = Console.ReadLine();
 
-                        Console.WriteLine("Stand in front of the kinect and perform the gesture " + numberOfTrainingSequences + " times");
-                        count = 0;
-                        onTraining = true;
-                    }
-                }            
+                //        Console.WriteLine("Stand in front of the kinect and perform the gesture " + numberOfTrainingSequences + " times");
+                //        count = 0;
+                //        onTraining = true;
+                //    }
+                //}            
 
                 foreach(Body body in this.bodies)
                 {
@@ -116,183 +116,196 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         
 
                         CameraSpacePoint position = joints[JointType.HandRight].Position;
+                        CameraSpacePoint handRight = joints[JointType.HandRight].Position;
+                        CameraSpacePoint shoulderRight = joints[JointType.ShoulderRight].Position;
+                        CameraSpacePoint elbowRight = joints[JointType.ElbowRight].Position;
+                        CameraSpacePoint handLeft = joints[JointType.HandLeft].Position;
+                        CameraSpacePoint elbowLeft = joints[JointType.ElbowLeft].Position;
                         if(position.Z < 0)
                         {
                             position.Z = InferredZPositionClamp;
                         }
 
+                        //Console.WriteLine(elbowLeft.Y*100.0 + " " + handLeft.Y*100.0);
+                        double dz = shoulderRight.Z*100.0 - handRight.Z*100.0;
+                        double hY = handRight.Y*100.0 - dz*0.41;
+                        dz = shoulderRight.Z*100.0 - elbowRight.Z*100.0;
+                        double eY = elbowRight.Y*100.0 - dz*0.42;
+                        Console.WriteLine(shoulderRight.Y*100.0 + " " + eY + " " + hY);
+                        //Console.WriteLine(shoulderRight.Z*100.0 + " " + elbowRight.Z*100.0 + " " + handRight.Z*100.0);
+                        Console.WriteLine();
+                        //System.Threading.Thread.Sleep(100);
 
-                        
-                        x = (double)position.X;
-                        y = (double)position.Y;
-                        z = (double)position.Z;
+                        //x = (double)position.X;
+                        //y = (double)position.Y;
+                        //z = (double)position.Z;
 
-                        if(onTraining)
-                        {
-                            if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
-                            {
-                                System.Threading.Thread.Sleep(150);
-                                tracking = true;
-                                stopwatch = new Stopwatch();
-                                stopwatch.Start();
-                                prevx = x;
-                                prevy = y;
-                                prevz = z;
-                                //count++;
-                                //text = "Hand Right: x = " + Convert.Tostring(x) + ", y = " + Convert.Tostring(y) + "   Count: " + Convert.Tostring(count);
-                                Console.WriteLine("Gesture Start!!\n\n");
-                                prevTime = stopwatch.Elapsed.TotalSeconds;
-                                FeatureVector.Clear();
-                                System.Threading.Thread.Sleep(200);
-                                continue;
-                                //System.IO.File.AppendAllText(@"C:\Users\Abid\Desktop\gg\BodyBasics-WPF\WriteText.txt", text + Environment.NewLine);
+                        //if(onTraining)
+                        //{
+                        //    if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
+                        //    {
+                        //        System.Threading.Thread.Sleep(150);
+                        //        tracking = true;
+                        //        stopwatch = new Stopwatch();
+                        //        stopwatch.Start();
+                        //        prevx = x;
+                        //        prevy = y;
+                        //        prevz = z;
+                        //        //count++;
+                        //        //text = "Hand Right: x = " + Convert.Tostring(x) + ", y = " + Convert.Tostring(y) + "   Count: " + Convert.Tostring(count);
+                        //        Console.WriteLine("Gesture Start!!\n\n");
+                        //        prevTime = stopwatch.Elapsed.TotalSeconds;
+                        //        FeatureVector.Clear();
+                        //        System.Threading.Thread.Sleep(200);
+                        //        continue;
+                        //        //System.IO.File.AppendAllText(@"C:\Users\Abid\Desktop\gg\BodyBasics-WPF\WriteText.txt", text + Environment.NewLine);
 
-                            }
-                            else if(tracking)
-                            {
-                                currTime = stopwatch.Elapsed.TotalSeconds;
-                                double speed = Math.Sqrt(((x - prevx) * (x - prevx)) + ((y - prevy) * (y - prevy)) + ((z - prevz) * (z - prevz))) * 1000.0 / (currTime - prevTime);
-                                //double speed = Math.Sqrt(Math.Pow(x-prevx, 2)+Math.Pow(y-prevy, 2)+Math.Pow(z-prevz;
-                                //Console.WriteLine(speed);
+                        //    }
+                        //    else if(tracking)
+                        //    {
+                        //        currTime = stopwatch.Elapsed.TotalSeconds;
+                        //        double speed = Math.Sqrt(((x - prevx) * (x - prevx)) + ((y - prevy) * (y - prevy)) + ((z - prevz) * (z - prevz))) * 1000.0 / (currTime - prevTime);
+                        //        //double speed = Math.Sqrt(Math.Pow(x-prevx, 2)+Math.Pow(y-prevy, 2)+Math.Pow(z-prevz;
+                        //        //Console.WriteLine(speed);
 
-                                double dx, dy, theta, alpha;
-                                dx = x - prevx;
-                                dy = y - prevy;
+                        //        double dx, dy, theta, alpha;
+                        //        dx = x - prevx;
+                        //        dy = y - prevy;
 
-                                theta = Math.Atan(dy/dx)*(180.0/Math.PI);
+                        //        theta = Math.Atan(dy/dx)*(180.0/Math.PI);
 
-                                if(dy > 0 && dx > 0) alpha = theta;
-                                else if(dy > 0 && dx < 0) alpha = theta+180.0;
-                                else if(dy < 0 && dx < 0) alpha = theta+180.0;
-                                else alpha = theta+360.0;
+                        //        if(dy > 0 && dx > 0) alpha = theta;
+                        //        else if(dy > 0 && dx < 0) alpha = theta+180.0;
+                        //        else if(dy < 0 && dx < 0) alpha = theta+180.0;
+                        //        else alpha = theta+360.0;
 
-                                if(alpha >= 0.0 && alpha < 45.0) FeatureVector.Add(0);
-                                if(alpha >= 45.0 && alpha < 90.0) FeatureVector.Add(1);
-                                if(alpha >= 90.0 && alpha < 135.0) FeatureVector.Add(2);
-                                if(alpha >= 135.0 && alpha < 180.0) FeatureVector.Add(3);
-                                if(alpha >= 180.0 && alpha < 225.0) FeatureVector.Add(4);
-                                if(alpha >= 225.0 && alpha < 270.0) FeatureVector.Add(5);
-                                if(alpha >= 270.0 && alpha < 315.0) FeatureVector.Add(6);
-                                if(alpha >= 315.0 && alpha < 360.0) FeatureVector.Add(7);
+                        //        if(alpha >= 0.0 && alpha < 45.0) FeatureVector.Add(0);
+                        //        if(alpha >= 45.0 && alpha < 90.0) FeatureVector.Add(1);
+                        //        if(alpha >= 90.0 && alpha < 135.0) FeatureVector.Add(2);
+                        //        if(alpha >= 135.0 && alpha < 180.0) FeatureVector.Add(3);
+                        //        if(alpha >= 180.0 && alpha < 225.0) FeatureVector.Add(4);
+                        //        if(alpha >= 225.0 && alpha < 270.0) FeatureVector.Add(5);
+                        //        if(alpha >= 270.0 && alpha < 315.0) FeatureVector.Add(6);
+                        //        if(alpha >= 315.0 && alpha < 360.0) FeatureVector.Add(7);
 
-                                //Console.WriteLine(alpha);
-                                if(speed < speedthreshold)
-                                {
-                                    Console.WriteLine("End of Gesture!\n\nFeature Vector: ");
-                                    tracking = false;
+                        //        //Console.WriteLine(alpha);
+                        //        if(speed < speedthreshold)
+                        //        {
+                        //            Console.WriteLine("End of Gesture!\n\nFeature Vector: ");
+                        //            tracking = false;
 
-                                    for(int i = 0;i<FeatureVector.Count;i++) Console.Write(FeatureVector[i] + ",");
-                                    Console.WriteLine("");
-                                    count++;
-                                    Console.WriteLine(count);
+                        //            for(int i = 0;i<FeatureVector.Count;i++) Console.Write(FeatureVector[i] + ",");
+                        //            Console.WriteLine("");
+                        //            count++;
+                        //            Console.WriteLine(count);
 
-                                    if(count <= numberOfTrainingSequences)
-                                    {
-                                        TrainingSequence.Add(FeatureVector);
-                                    }
-                                    if(count == numberOfTrainingSequences)
-                                    {
-                                        sequences = TrainingSequence.Select(a => a.ToArray()).ToArray();
-                                        HiddenMarkovModel hmm = new HiddenMarkovModel(8, 8);
-                                        teacher = new BaumWelchLearning(hmm) { Tolerance = 0.0001,Iterations = 0 };
-                                        teacher.Run(sequences);
-                                        HMM.Add(new Tuple<string, HiddenMarkovModel>(currentGestureName, hmm));
+                        //            if(count <= numberOfTrainingSequences)
+                        //            {
+                        //                TrainingSequence.Add(FeatureVector);
+                        //            }
+                        //            if(count == numberOfTrainingSequences)
+                        //            {
+                        //                sequences = TrainingSequence.Select(a => a.ToArray()).ToArray();
+                        //                HiddenMarkovModel hmm = new HiddenMarkovModel(8, 8);
+                        //                teacher = new BaumWelchLearning(hmm) { Tolerance = 0.0001,Iterations = 0 };
+                        //                teacher.Run(sequences);
+                        //                HMM.Add(new Tuple<string, HiddenMarkovModel>(currentGestureName, hmm));
 
-                                        Console.WriteLine("Training finished for current gesture!\n\n");
-                                        TrainingSequence.Clear();
-                                        onTraining = false;
-                                    }                                    
+                        //                Console.WriteLine("Training finished for current gesture!\n\n");
+                        //                TrainingSequence.Clear();
+                        //                onTraining = false;
+                        //            }                                    
 
-                                    System.Threading.Thread.Sleep(2000);
-                                }
-                                prevx = x;
-                                prevy = y;
-                                prevz = z;
-                                prevTime = currTime;
-                            }
-                        }
+                        //            System.Threading.Thread.Sleep(2000);
+                        //        }
+                        //        prevx = x;
+                        //        prevy = y;
+                        //        prevz = z;
+                        //        prevTime = currTime;
+                        //    }
+                        //}
 
-                        if(!isTraining)
-                        { 
-                            if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
-                            {
-                                System.Threading.Thread.Sleep(150);
-                                tracking = true;
-                                stopwatch = new Stopwatch();
-                                stopwatch.Start();
-                                prevx = x;
-                                prevy = y;
-                                prevz = z;
-                                //count++;
-                                //text = "Hand Right: x = " + Convert.Tostring(x) + ", y = " + Convert.Tostring(y) + "   Count: " + Convert.Tostring(count);
-                                Console.WriteLine("Gesture Start!!\n\n");
-                                prevTime = stopwatch.Elapsed.TotalSeconds;
-                                FeatureVector.Clear();
-                                System.Threading.Thread.Sleep(200);
-                                continue;
-                                //System.IO.File.AppendAllText(@"C:\Users\Abid\Desktop\gg\BodyBasics-WPF\WriteText.txt", text + Environment.NewLine);
+                        //if(!isTraining)
+                        //{ 
+                        //    if(tracking == false && x >= (double)0.10 && x <= (double)0.50 && y >= (double)0.15 && y <= (double)0.55)
+                        //    {
+                        //        System.Threading.Thread.Sleep(150);
+                        //        tracking = true;
+                        //        stopwatch = new Stopwatch();
+                        //        stopwatch.Start();
+                        //        prevx = x;
+                        //        prevy = y;
+                        //        prevz = z;
+                        //        //count++;
+                        //        //text = "Hand Right: x = " + Convert.Tostring(x) + ", y = " + Convert.Tostring(y) + "   Count: " + Convert.Tostring(count);
+                        //        Console.WriteLine("Gesture Start!!\n\n");
+                        //        prevTime = stopwatch.Elapsed.TotalSeconds;
+                        //        FeatureVector.Clear();
+                        //        System.Threading.Thread.Sleep(200);
+                        //        continue;
+                        //        //System.IO.File.AppendAllText(@"C:\Users\Abid\Desktop\gg\BodyBasics-WPF\WriteText.txt", text + Environment.NewLine);
 
-                            }
-                            else if(tracking)
-                            {
-                                currTime = stopwatch.Elapsed.TotalSeconds;
-                                double speed = Math.Sqrt(((x - prevx) * (x - prevx)) + ((y - prevy) * (y - prevy)) + ((z - prevz) * (z - prevz))) * 1000.0 / (currTime - prevTime);
-                                //double speed = Math.Sqrt(Math.Pow(x-prevx, 2)+Math.Pow(y-prevy, 2)+Math.Pow(z-prevz;
-                                //Console.WriteLine(speed);
+                        //    }
+                        //    else if(tracking)
+                        //    {
+                        //        currTime = stopwatch.Elapsed.TotalSeconds;
+                        //        double speed = Math.Sqrt(((x - prevx) * (x - prevx)) + ((y - prevy) * (y - prevy)) + ((z - prevz) * (z - prevz))) * 1000.0 / (currTime - prevTime);
+                        //        //double speed = Math.Sqrt(Math.Pow(x-prevx, 2)+Math.Pow(y-prevy, 2)+Math.Pow(z-prevz;
+                        //        //Console.WriteLine(speed);
 
-                                double dx, dy, theta, alpha;
-                                dx = x - prevx;
-                                dy = y - prevy;
+                        //        double dx, dy, theta, alpha;
+                        //        dx = x - prevx;
+                        //        dy = y - prevy;
 
-                                theta = Math.Atan(dy/dx)*(180.0/Math.PI);
+                        //        theta = Math.Atan(dy/dx)*(180.0/Math.PI);
 
-                                if(dy > 0 && dx > 0) alpha = theta;
-                                else if(dy > 0 && dx < 0) alpha = theta+180.0;
-                                else if(dy < 0 && dx < 0) alpha = theta+180.0;
-                                else alpha = theta+360.0;
+                        //        if(dy > 0 && dx > 0) alpha = theta;
+                        //        else if(dy > 0 && dx < 0) alpha = theta+180.0;
+                        //        else if(dy < 0 && dx < 0) alpha = theta+180.0;
+                        //        else alpha = theta+360.0;
 
-                                if(alpha >= 0.0 && alpha < 45.0) FeatureVector.Add(0);
-                                if(alpha >= 45.0 && alpha < 90.0) FeatureVector.Add(1);
-                                if(alpha >= 90.0 && alpha < 135.0) FeatureVector.Add(2);
-                                if(alpha >= 135.0 && alpha < 180.0) FeatureVector.Add(3);
-                                if(alpha >= 180.0 && alpha < 225.0) FeatureVector.Add(4);
-                                if(alpha >= 225.0 && alpha < 270.0) FeatureVector.Add(5);
-                                if(alpha >= 270.0 && alpha < 315.0) FeatureVector.Add(6);
-                                if(alpha >= 315.0 && alpha < 360.0) FeatureVector.Add(7);
+                        //        if(alpha >= 0.0 && alpha < 45.0) FeatureVector.Add(0);
+                        //        if(alpha >= 45.0 && alpha < 90.0) FeatureVector.Add(1);
+                        //        if(alpha >= 90.0 && alpha < 135.0) FeatureVector.Add(2);
+                        //        if(alpha >= 135.0 && alpha < 180.0) FeatureVector.Add(3);
+                        //        if(alpha >= 180.0 && alpha < 225.0) FeatureVector.Add(4);
+                        //        if(alpha >= 225.0 && alpha < 270.0) FeatureVector.Add(5);
+                        //        if(alpha >= 270.0 && alpha < 315.0) FeatureVector.Add(6);
+                        //        if(alpha >= 315.0 && alpha < 360.0) FeatureVector.Add(7);
 
-                                //Console.WriteLine(alpha);
-                                if(speed < speedthreshold)
-                                {
-                                    Console.WriteLine("End of Gesture!\n\n");
-                                    tracking = false;
+                        //        //Console.WriteLine(alpha);
+                        //        if(speed < speedthreshold)
+                        //        {
+                        //            Console.WriteLine("End of Gesture!\n\n");
+                        //            tracking = false;
 
-                                    for(int i = 0;i<FeatureVector.Count;i++) Console.Write(FeatureVector[i] + ",");
-                                    Console.WriteLine("");
-                                    
-                                    double maximumLikelihood = -9999999.0;
-                                    int matchedIndex = 0;
-                                    for(int i=0; i<HMM.Count; i++)
-                                    {
-                                        double likeliHood = HMM[i].Item2.LogLikelihood(FeatureVector.ToArray());  
-                                        
-                                        if(Double.IsInfinity(likeliHood) == false && likeliHood > maximumLikelihood)
-                                        {
-                                            maximumLikelihood = likeliHood;
-                                            matchedIndex = i;
-                                        }    
-                                    }
+                        //            for(int i = 0;i<FeatureVector.Count;i++) Console.Write(FeatureVector[i] + ",");
+                        //            Console.WriteLine("");
 
-                                    if(maximumLikelihood == -9999999.0) Console.WriteLine("Unidentified Gesture!!\n");
-                                    else Console.WriteLine("Performed gesture identified as \""+ HMM[matchedIndex].Item1 + "\"\n\n");
-                                    System.Threading.Thread.Sleep(2000);
-                                }
-                                prevx = x;
-                                prevy = y;
-                                prevz = z;
-                                prevTime = currTime;
-                            }
-                        }
-                        
+                        //            double maximumLikelihood = -9999999.0;
+                        //            int matchedIndex = 0;
+                        //            for(int i=0; i<HMM.Count; i++)
+                        //            {
+                        //                double likeliHood = HMM[i].Item2.LogLikelihood(FeatureVector.ToArray());  
+
+                        //                if(Double.IsInfinity(likeliHood) == false && likeliHood > maximumLikelihood)
+                        //                {
+                        //                    maximumLikelihood = likeliHood;
+                        //                    matchedIndex = i;
+                        //                }    
+                        //            }
+
+                        //            if(maximumLikelihood == -9999999.0) Console.WriteLine("Unidentified Gesture!!\n");
+                        //            else Console.WriteLine("Performed gesture identified as \""+ HMM[matchedIndex].Item1 + "\"\n\n");
+                        //            System.Threading.Thread.Sleep(2000);
+                        //        }
+                        //        prevx = x;
+                        //        prevy = y;
+                        //        prevz = z;
+                        //        prevTime = currTime;
+                        //    }
+                        //}
+
                     }
                 }                
             }
