@@ -132,10 +132,10 @@ namespace PG
             labelToName.Add(3, "Speed Down");
             labelToName.Add(4, "Return");
 
-            System.IO.File.WriteAllText(@"Simulator/data.txt","");
+            System.IO.File.WriteAllText(@"Simulator/data.txt","gg");
             simulator = new StreamWriter(@"Simulator/data.txt", true);
 
-            reference = new Point(200.0, 200.0, 200.0);
+            reference = new Point(210.0, 210.0, 210.0);
             robot = new Point(0.0, 0.0);
             intersection = new Point(0.0, 0.0);
 
@@ -150,6 +150,8 @@ namespace PG
             GetFrames();    
             
         }
+
+        
 
         public void GetFrames()
         {
@@ -209,6 +211,11 @@ namespace PG
                     this.kinectSensor.Close();
                 }
             }
+        }
+
+        private void buttonSimulator_Click(object sender,EventArgs e)
+        {
+            Process.Start(@"Simulator\Simulator.exe");            
         }
 
         private void Reader_FrameArrived(object sender,BodyFrameArrivedEventArgs e)
@@ -523,8 +530,7 @@ namespace PG
             //int[] outputLabels = trainingLabels.ToArray();
 
             //double error = teacher.Run(inputSequences, outputLabels);
-
-            Console.WriteLine("GG");
+            
             for(int i=0; i< numOfGestures; i++)
             {
                 ts.Clear();
@@ -536,13 +542,13 @@ namespace PG
                     }
                 }
 
-                for(int j=0; j<ts.Count; j++)
-                {
-                    for(int k=0; k<ts[j].Count; k++) Console.Write(ts[j][k] + " ");
+                //for(int j=0; j<ts.Count; j++)
+                //{
+                //    for(int k=0; k<ts[j].Count; k++) Console.Write(ts[j][k] + " ");
                     
-                Console.WriteLine("");
-                }
-                Console.WriteLine();
+                //Console.WriteLine("");
+                //}
+                //Console.WriteLine();
                 int[][] inputSequences = ts.Select(a => a.ToArray()).ToArray();
                 HiddenMarkovModel hmm = new HiddenMarkovModel(6, 20);
                 teacher = new BaumWelchLearning(hmm) { Tolerance = 0.0001,Iterations = 0 };

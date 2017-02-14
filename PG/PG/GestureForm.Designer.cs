@@ -46,6 +46,7 @@
             this.labelA = new System.Windows.Forms.Label();
             this.labelB = new System.Windows.Forms.Label();
             this.labelD = new System.Windows.Forms.Label();
+            this.buttonSimulator = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonTrain
@@ -146,7 +147,7 @@
             // labelPointing
             // 
             this.labelPointing.AutoSize = true;
-            this.labelPointing.Location = new System.Drawing.Point(101, 423);
+            this.labelPointing.Location = new System.Drawing.Point(22, 423);
             this.labelPointing.Name = "labelPointing";
             this.labelPointing.Size = new System.Drawing.Size(132, 13);
             this.labelPointing.TabIndex = 9;
@@ -159,7 +160,7 @@
             this.comboPointing.Items.AddRange(new object[] {
             "Method 1",
             "Method 2"});
-            this.comboPointing.Location = new System.Drawing.Point(239, 420);
+            this.comboPointing.Location = new System.Drawing.Point(154, 420);
             this.comboPointing.Name = "comboPointing";
             this.comboPointing.Size = new System.Drawing.Size(121, 21);
             this.comboPointing.TabIndex = 10;
@@ -229,11 +230,22 @@
             this.labelD.TabIndex = 17;
             this.labelD.Text = "Boundary D:";
             // 
+            // buttonSimulator
+            // 
+            this.buttonSimulator.Location = new System.Drawing.Point(347, 418);
+            this.buttonSimulator.Name = "buttonSimulator";
+            this.buttonSimulator.Size = new System.Drawing.Size(87, 23);
+            this.buttonSimulator.TabIndex = 18;
+            this.buttonSimulator.Text = "Start Simulator";
+            this.buttonSimulator.UseVisualStyleBackColor = true;
+            this.buttonSimulator.Click += new System.EventHandler(this.buttonSimulator_Click);
+            // 
             // GestureForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(478, 505);
+            this.Controls.Add(this.buttonSimulator);
             this.Controls.Add(this.labelD);
             this.Controls.Add(this.labelB);
             this.Controls.Add(this.labelA);
@@ -280,6 +292,7 @@
         private System.Windows.Forms.Label labelA;
         private System.Windows.Forms.Label labelB;
         private System.Windows.Forms.Label labelD;
+        private System.Windows.Forms.Button buttonSimulator;
     }
 }
 
