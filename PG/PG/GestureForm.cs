@@ -42,11 +42,13 @@ namespace PG
         private double A, B, D;
         private double speed;
 
+        int fpscounter = 0;
+
         Dictionary <int, String> labelToName;
         List<List<int>> trainingSequences, ts;
         List<int> featureVector, trainingLabels, handX, handY, handZ;
-        
-        //HiddenMarkovClassifier classifier;
+
+        HiddenMarkovClassifier classifier;
 
         List<Tuple<int, HiddenMarkovModel>> HMM;
         BaumWelchLearning teacher;
@@ -132,12 +134,17 @@ namespace PG
             labelToName.Add(3, "Speed Down");
             labelToName.Add(4, "Return");
 
-            System.IO.File.WriteAllText(@"Simulator/data.txt","gg");
+            System.IO.File.WriteAllText(@"Simulator/data.txt","r 0.0 -200.0");
+
             simulator = new StreamWriter(@"Simulator/data.txt", true);
+            
+             
 
             reference = new Point(210.0, 210.0, 210.0);
-            robot = new Point(0.0, 0.0);
+            robot = new Point(0.0, -200.0);
             intersection = new Point(0.0, 0.0);
+
+            simulator.WriteLine("r " + robot.X + " " + robot.Z);
 
             this.kinectSensor = KinectSensor.GetDefault();
 
@@ -215,13 +222,18 @@ namespace PG
 
         private void buttonSimulator_Click(object sender,EventArgs e)
         {
-            Process.Start(@"Simulator\Simulator.exe");            
+            
+            Process.Start(@"Simulator\Simulator.exe");           
         }
 
         private void Reader_FrameArrived(object sender,BodyFrameArrivedEventArgs e)
         {
             bool dataReceived = false;
-
+            if(isTracking == true)
+            {
+                fpscounter++;
+                if(fpscounter % 3 == 0) return;
+            }
             using(BodyFrame bodyFrame = e.FrameReference.AcquireFrame())
             {
                 if(bodyFrame != null)
@@ -275,7 +287,7 @@ namespace PG
                         double elbowRightY = elbowRight.Y*100.0 - tempz*0.42;
                         double shoulderRightY = shoulderRight.Y * 100.0;
 
-                        if(Math.Abs(shoulderRightY-elbowRightY) <= 3.0 && Math.Abs(shoulderRightY-handRightY) < 6.0)
+                        if(Math.Abs(shoulderRightY-elbowRightY) <= 3.0 && Math.Abs(shoulderRightY-handRightY) < 8.0)
                         {
                             labelRobot.Text = "Robot Status: Moving";
                             returnToUser = false;
@@ -361,7 +373,7 @@ namespace PG
                                 
                                 if(distance(intersection, robot) > 10.0)
                                 {
-                                    length = 5.0;
+                                    length = speed;
                                     alpha = Math.Atan2(intersection.Z-robot.Z, intersection.X-robot.X);
                                     robot = new Point(robot.X+length*Math.Cos(alpha), robot.Z+length*Math.Sin(alpha));  // extending the line by length cm from start position
                                                    
@@ -398,8 +410,8 @@ namespace PG
                             int tx = Convert.ToInt32(Math.Floor(current.X/normalizer));
                             int ty = Convert.ToInt32(Math.Floor(current.Y/normalizer));
                             int tz = Convert.ToInt32(Math.Floor(current.Z/normalizer));
-                            Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
-                            Debug.WriteLine(tx + " " + ty + " " + tz);
+                            //Debug.WriteLine(current.X + " " + current.Y + " " + current.Z);
+                            //Debug.WriteLine(tx + " " + ty + " " + tz);
                             handX.Add(tx);
                             handY.Add(ty);
                             handZ.Add(tz);
@@ -409,6 +421,7 @@ namespace PG
                         if(isTracking == false && elbowLeft.Y*100.0+14.0 < handLeft.Y*100.0 &&  body.HandLeftState == HandState.Closed)
                         {
                             labelGesture.Text = "Performing Gesture";
+                            fpscounter = 0;
                             handX.Clear();
                             handY.Clear();
                             handZ.Clear();
@@ -431,11 +444,18 @@ namespace PG
                             {
                                 featureVector.Clear();
                                 for(int i = 0;i<handX.Count;i++) featureVector.Add(handX[i]);
-                                //featureVector.Add(0);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
                                 for(int i = 0;i<handY.Count;i++) featureVector.Add(handY[i]);
-                                //featureVector.Add(0);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
                                 for(int i = 0;i<handZ.Count;i++) featureVector.Add(handZ[i]);
-                                //featureVector.Add(0);
                                 trainingSequences.Add(new List<int>(featureVector));
                                 trainingLabels.Add(comboTrain.SelectedIndex);
                                 
@@ -445,55 +465,69 @@ namespace PG
                             {
                                 featureVector.Clear();
                                 for(int i = 0;i<handX.Count;i++) featureVector.Add(handX[i]);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
                                 for(int i = 0;i<handY.Count;i++) featureVector.Add(handY[i]);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
+                                //featureVector.Add(29);
                                 for(int i = 0;i<handZ.Count;i++) featureVector.Add(handZ[i]);
 
-                                double mx = -999999.0;
-                                int recognizedLabel = 0;
-                                for(int i=0; i<numOfGestures; i++)
-                                {
-                                    double likelihood = HMM[i].Item2.LogLikelihood(featureVector.ToArray());
-                                    if(Double.IsInfinity(likelihood)) continue;
-                                    if(likelihood >= -200.0 && likelihood >  mx)
-                                    {
-                                        mx = likelihood;
-                                        recognizedLabel = i;
-                                    }                                    
-                                }
 
-                                if(mx != -999999.0)
-                                {
-                                    labelGesture.Text = "Gesture Performed: " + labelToName[recognizedLabel];
+                                //double mx = -999999.0;
+                                //int recognizedLabel = 0;
+                                //for(int i = 0;i<numOfGestures;i++)
+                                //{
+                                //    double likelihood = HMM[i].Item2.LogLikelihood(featureVector.ToArray());
+                                //    Console.WriteLine(likelihood);
+                                //    if(Double.IsInfinity(likelihood)) continue;
+                                //    if(likelihood >= -130.0 && likelihood >  mx)
+                                //    {
+                                //        mx = likelihood;
+                                //        recognizedLabel = i;
+                                //    }
+                                //}
 
-                                    if(recognizedLabel == 0) forward();
-                                    else if(recognizedLabel == 1) backward();
-                                    else if(recognizedLabel == 2) speedUp();
-                                    else if(recognizedLabel == 3) speedDown();
-                                    else Return();
-                                }
-                                else labelGesture.Text = "Gesture Performed: Unrecognized Gesture";
+                                //if(mx != -999999.0)
+                                //{
+                                //    labelGesture.Text = "Gesture Performed: " + labelToName[recognizedLabel];
 
-                                //int recognizedLabel = classifier.Decide(featureVector.ToArray());
-                                //labelGesture.Text = labelToName[recognizedLabel];
-                                
-                                //if(recognizedLabel == 0) forward();
-                                //else if(recognizedLabel == 1) backward();
-                                //else if(recognizedLabel == 2) speedUp();
-                                //else if(recognizedLabel == 3) speedDown();
-                                
-                                ////String sequenceFile = @"Resources\S.txt";
-                                ////String labelFile =  @"Resources\L.txt";
+                                //    if(recognizedLabel == 0) forward();
+                                //    else if(recognizedLabel == 1) backward();
+                                //    else if(recognizedLabel == 2) speedUp();
+                                //    else if(recognizedLabel == 3) speedDown();
+                                //    else Return();
+                                //}
+                                //else labelGesture.Text = "Gesture Performed: Unrecognized Gesture";
 
-                                //////System.IO.File.WriteAllText(sequenceFile, "");
-                                //////System.IO.File.WriteAllText(labelFile, "");
+                                ////////////////////////////////////
 
-                                ////for(int i = 0;i<featureVector.Count;i++)
-                                ////{
+                                int recognizedLabel = classifier.Decide(featureVector.ToArray());
+                                labelGesture.Text = labelToName[recognizedLabel];
 
-                                ////    System.IO.File.AppendAllText(sequenceFile,featureVector[i].ToString());
-                                ////}
+                                if(recognizedLabel == 0) forward();
+                                else if(recognizedLabel == 1) backward();
+                                else if(recognizedLabel == 2) speedUp();
+                                else if(recognizedLabel == 3) speedDown();
 
-                                ////System.IO.File.AppendAllText(sequenceFile, "  " + recognizedLabel.ToString() + Environment.NewLine);
+                                //String sequenceFile = @"Resources\S.txt";
+                                //String labelFile =  @"Resources\L.txt";
+
+                                ////System.IO.File.WriteAllText(sequenceFile, "");
+                                ////System.IO.File.WriteAllText(labelFile, "");
+
+                                //for(int i = 0;i<featureVector.Count;i++)
+                                //{
+
+                                //    System.IO.File.AppendAllText(sequenceFile,featureVector[i].ToString());
+                                //}
+
+                                //System.IO.File.AppendAllText(sequenceFile, "  " + recognizedLabel.ToString() + Environment.NewLine);
                             }
                         }
                     }
@@ -517,46 +551,39 @@ namespace PG
 
         private void buttonLearnHMM_Click(object sender,EventArgs e)
         {
-            //    ITopology forward = new Forward(states: 6);
-            //    classifier = new HiddenMarkovClassifier(classes: 5, topology: forward, symbols: 20);
-            //    var teacher = new HiddenMarkovClassifierLearning(classifier,                
-            //        modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
-            //        {
-            //            Tolerance = 0.0001, // iterate until log-likelihood changes less than 0.001
-            //            Iterations = 0     // don't place an upper limit on the number of iterations
-            //        });
-
-            //int[][] inputSequences = trainingSequences.Select(a => a.ToArray()).ToArray();
-            //int[] outputLabels = trainingLabels.ToArray();
-
-            //double error = teacher.Run(inputSequences, outputLabels);
-            
-            for(int i=0; i< numOfGestures; i++)
-            {
-                ts.Clear();
-                for(int j=0; j<trainingSequences.Count; j++)
+            ITopology forward = new Forward(states: 6);
+            classifier = new HiddenMarkovClassifier(classes: 5,topology: forward,symbols: 30);
+            var teacher = new HiddenMarkovClassifierLearning(classifier,
+                modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
                 {
-                    if(trainingLabels[j] == i)
-                    {
-                        ts.Add(new List<int>(trainingSequences[j]));
-                    }
-                }
+                    Tolerance = 0.0001, // iterate until log-likelihood changes less than 0.001
+                    Iterations = 0     // don't place an upper limit on the number of iterations
+                });
 
-                //for(int j=0; j<ts.Count; j++)
-                //{
-                //    for(int k=0; k<ts[j].Count; k++) Console.Write(ts[j][k] + " ");
-                    
-                //Console.WriteLine("");
-                //}
-                //Console.WriteLine();
-                int[][] inputSequences = ts.Select(a => a.ToArray()).ToArray();
-                HiddenMarkovModel hmm = new HiddenMarkovModel(6, 20);
-                teacher = new BaumWelchLearning(hmm) { Tolerance = 0.0001,Iterations = 0 };
-                teacher.Run(inputSequences);
-                HMM.Add(new Tuple<int, HiddenMarkovModel>(i, hmm));
+            int[][] inputSequences = trainingSequences.Select(a => a.ToArray()).ToArray();
+            int[] outputLabels = trainingLabels.ToArray();
 
-            }
-            
+            double error = teacher.Run(inputSequences,outputLabels);
+
+            //////////////////////////////////////////////////
+
+            //for(int i = 0;i< numOfGestures;i++)
+            //{
+            //    ts.Clear();
+            //    for(int j = 0;j<trainingSequences.Count;j++)
+            //    {
+            //        if(trainingLabels[j] == i)
+            //        {
+            //            ts.Add(new List<int>(trainingSequences[j]));
+            //        }
+            //    }
+
+            //    int[][] inputSequences = ts.Select(a => a.ToArray()).ToArray();
+            //    HiddenMarkovModel hmm = new HiddenMarkovModel(6,20);
+            //    teacher = new BaumWelchLearning(hmm) { Tolerance = 0.0001,Iterations = 0 };
+            //    teacher.Run(inputSequences);
+            //    HMM.Add(new Tuple<int,HiddenMarkovModel>(i,hmm));
+            //}
         }
 
         private void buttonSaveToFile_Click(object sender,EventArgs e)
@@ -571,6 +598,7 @@ namespace PG
             {
                 for(int i = 0;i<trainingSequences.Count;i++)
                 {
+                    //if(i > 1 && trainingLabels[i] != trainingLabels[i]) Console.WriteLine();
                     for(int j = 0;j<trainingSequences[i].Count;j++)
                         sw.Write(trainingSequences[i][j].ToString() + " ");
                     sw.WriteLine("");
